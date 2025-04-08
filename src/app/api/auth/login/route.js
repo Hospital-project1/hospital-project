@@ -42,7 +42,7 @@ export async function POST(req) {
     const user = await User.findOne({ email });
     if (!user) {
       return NextResponse.json(
-        { success: false, message: 'Invalid email please check your email' },
+        { success: false, message: "email address doesn't exist, please register" },
         { status: 401 }
       );
     }
