@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const doctorSchema = new Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  specialty: { type: String, required: true },
+  specialty: { type: mongoose.Schema.Types.ObjectId, ref: "Department", required: true },
   availability: [
     {
       day: { type: String },
@@ -11,6 +11,7 @@ const doctorSchema = new Schema({
     },
   ],
   patients: [{ type: mongoose.Schema.Types.ObjectId, ref: "Patient" }],
+  details: { type: String, default:"" },
 });
 
 module.exports = mongoose.model("Doctor", doctorSchema);
