@@ -5,56 +5,68 @@ import { format, isBefore } from 'date-fns';
 
 export default function AppointmentForm({ appointment, onSubmit, onCancel }) {
   const [formData, setFormData] = useState({
-    patient: '',
     doctor: '',
     appointmentDate: '',
     reason: '',
   });
-  const [patients, setPatients] = useState([]);
+  const [patientName, setPatientName] = useState('');
+  const [patientId, setPatientId] = useState('');
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
+    
+    const fetchPatientData = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('/api/auth/me', {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          withCredentials: true
+        });
+        
+        if (response.data.success) {
+          setPatientName(response.data.user.name);
+          setPatientId(response.data.user._id);
+        }
+      } catch (error) {
+        console.error('Failed to fetch patient data:', error);
+      }
+    };
+
+    if (!appointment) {
+      fetchPatientData();
+    }
+
     if (appointment) {
       setFormData({
-        patient: appointment.patient?._id || '',
         doctor: appointment.doctor?._id || '',
         appointmentDate: format(new Date(appointment.appointmentDate), "yyyy-MM-dd'T'HH:mm"),
         reason: appointment.reason || '',
       });
-    } else {
-      setFormData({
-        patient: '',
-        doctor: '',
-        appointmentDate: '',
-        reason: '',
-      });
+      setPatientName(appointment.patient?.name || '');
+      setPatientId(appointment.patient?._id || '');
     }
 
-    const fetchData = async () => {
+    const fetchDoctors = async () => {
       try {
-        setLoading(true);
-        const [patientsRes, doctorsRes] = await Promise.all([
-          axios.get('/api/patients'),
-          axios.get('/api/doctors'),
-        ]);
-        setPatients(patientsRes.data.data);
+        const doctorsRes = await axios.get('/api/doctors');
         setDoctors(doctorsRes.data.data);
       } catch (error) {
-        console.error('Failed to fetch data', error);
+        console.error('Failed to fetch doctors', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
+    fetchDoctors();
   }, [appointment]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -81,7 +93,12 @@ export default function AppointmentForm({ appointment, onSubmit, onCancel }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      onSubmit(formData);
+      const dataToSubmit = {
+        ...formData,
+        patient: patientId, 
+        patientName: patientName 
+      };
+      onSubmit(dataToSubmit);
     }
   };
 
@@ -96,25 +113,17 @@ export default function AppointmentForm({ appointment, onSubmit, onCancel }) {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Patient
             </label>
-            <select
-              name="patient"
-              value={formData.patient}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md px-3 py-2"
-              required
-              disabled={loading}
-            >
-              <option value="">Select Patient</option>
-              {patients.map((patient) => (
-                <option key={patient._id} value={patient._id}>
-                  {patient.name}
-                </option>
-              ))}
-            </select>
+            <input
+              type="text"
+              value={patientName || 'Loading...'}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
+              readOnly
+              disabled
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Doctor
+              Doctor *
             </label>
             <select
               name="doctor"
@@ -127,7 +136,7 @@ export default function AppointmentForm({ appointment, onSubmit, onCancel }) {
               <option value="">Select Doctor</option>
               {doctors.map((doctor) => (
                 <option key={doctor._id} value={doctor._id}>
-                  {doctor.name} ({doctor.specialization})
+                  {doctor.name} ({doctor.specialty})
                 </option>
               ))}
             </select>
@@ -177,6 +186,7 @@ export default function AppointmentForm({ appointment, onSubmit, onCancel }) {
           <button
             type="submit"
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            disabled={loading}
           >
             {appointment ? 'Update' : 'Create'}
           </button>
