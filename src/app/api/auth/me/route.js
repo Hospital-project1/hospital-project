@@ -32,7 +32,7 @@ export async function GET(req) {
     }
 
     // 3) Fetch the user from the database
-    const user = await User.findById(decoded.userId).select('-password'); // Exclude password
+    const user = await User.findById(decoded.userId).select('-password'); 
     if (!user) {
       return NextResponse.json(
         { success: false, message: 'User not found' },
