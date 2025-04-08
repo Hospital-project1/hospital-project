@@ -22,6 +22,7 @@ export default function DashboardSidebar() {
     { name: 'Billing', href: '/admin/dashboard/billing', icon: CreditCardIcon },
     { name: 'Analytics', href: '/admin/dashboard/analytics', icon: ChartBarIcon },
     { name: 'Feedback', href: '/admin/dashboard/feedback', icon: MessageSquareIcon },
+    { name: 'contact', href: '/admin/dashboard/contact', icon: MessageSquareIcon },
   ];
   return (
     <aside className={`${collapsed ? 'w-16' : 'w-64'} bg-[#1D1F27] text-[#DDDFDE] transition-all duration-300 border-r border-[#DDDFDE]/10 h-screen sticky top-0`}>
