@@ -7,6 +7,7 @@ const billingSchema = new Schema({
     ref: "Patient",
     required: true,
   },
+  
   totalAmount: { type: Number, required: true },
   status: {
     type: String,
