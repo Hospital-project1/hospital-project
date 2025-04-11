@@ -39,7 +39,7 @@ export default function LoginPage() {
       }}, 2000);
       
     } catch (err) {
-      setError(err.response?.data?.message || "An error occurred");
+      toast.error(err.response?.data?.message || "An error occurred");
     } finally {
       setIsLoading(false);
     }

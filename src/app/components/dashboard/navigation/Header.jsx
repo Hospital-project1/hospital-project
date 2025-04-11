@@ -8,7 +8,7 @@ export default function DashboardHeader() {
   
   return (
     <header className="h-16 border-b border-[#DDDFDE]/10 bg-[#1D1F27] text-[#DDDFDE] flex items-center justify-between px-6">
-      <div className="relative w-64">
+      {/* <div className="relative w-64">
         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
           <Search className="w-4 h-4 text-[#DDDFDE]/60" />
         </div>
@@ -33,7 +33,7 @@ export default function DashboardHeader() {
           </div>
           <span className="font-medium text-sm">Admin User</span>
         </div>
-      </div>
+      </div> */}
     </header>
   );
 }
