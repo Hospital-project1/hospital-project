@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { toast, Toaster } from "react-hot-toast";
 import { User, Mail, Lock, Phone, Eye, EyeOff } from "lucide-react";
+import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 
 export default function RegisterPage() {
@@ -15,13 +16,14 @@ export default function RegisterPage() {
   const [phone, setPhone] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const { setUser } = useContext(AuthContext);
 
-  // Colors from your palette
+  
   const colors = {
-    darkBlue: "#1A202C", // Dark blue/black from left
-    lightGray: "#E2E8F0", // Light gray from second column
-    orange: "#DD6B20", // Orange from third column
-    teal: "#0BC5C5", // Teal from right
+    darkBlue: "#1A202C", 
+    lightGray: "#E2E8F0", 
+    orange: "#DD6B20", 
+    teal: "#0BC5C5", 
   };
 
   const handleRegister = async (e) => {
@@ -36,8 +38,10 @@ export default function RegisterPage() {
         phone,
       });
 
+      const { user } = response.data;
+      setUser(user);
       toast.success(response.data.message || "Registered successfully!");
-      
+
       setTimeout(() => {
         router.push("/");
       }, 2000);

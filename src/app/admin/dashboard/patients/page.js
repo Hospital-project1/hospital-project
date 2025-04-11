@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import axios from 'axios';
 
 export default function PatientsPage() {
   const [patients, setPatients] = useState([]);
@@ -9,27 +10,21 @@ export default function PatientsPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchPatients = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('http://localhost:3000/api/patients');
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch patients');
-        }
-        
-        const data = await response.json();
-        setPatients(data.data);
-      } catch (err) {
-        console.error('Error fetching patients:', err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchPatients();
   }, []);
+
+  const fetchPatients = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('/api/patients');
+      setPatients(response.data.data);
+    } catch (err) {
+      console.error('Error fetching patients:', err);
+      setError(err.message || 'Failed to fetch patients');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Format date to be more readable
   const formatDate = (dateString) => {
@@ -37,12 +32,26 @@ export default function PatientsPage() {
     return date.toLocaleDateString();
   };
 
+  // Function to handle soft delete
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this patient?')) {
+      try {
+        await axios.delete(`/api/patients/${id}`);
+        // Refresh the patients list after deletion
+        fetchPatients();
+      } catch (err) {
+        console.error('Error deleting patient:', err);
+        alert('Failed to delete patient');
+      }
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-[#DDDFDE]">Patient Records</h1>
         <Link 
-          href="/dashboard/patients/add" 
+          href="/admin/dashboard/patients/add" 
           className="px-4 py-2 bg-[#0CB8B6] text-white rounded-md hover:bg-[#0CB8B6]/90 transition-colors"
         >
           Add New Patient
@@ -78,14 +87,14 @@ export default function PatientsPage() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE]">{patient.address || '-'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE]">{formatDate(patient.createdAt)}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE] space-x-2">
-                      <Link
-                        href={`/dashboard/patients/${patient._id}`}
-                        className="text-[#0CB8B6] hover:underline"
+                      <button
+                        onClick={() => handleDelete(patient._id)}
+                        className="text-red-500 hover:underline cursor-pointer"
                       >
-                        View
-                      </Link>
+                        Delete
+                      </button>
                       <Link
-                        href={`/dashboard/patients/${patient._id}/edit`}
+                        href={`/admin/dashboard/patients/${patient._id}/edit`}
                         className="text-yellow-500 hover:underline"
                       >
                         Edit
