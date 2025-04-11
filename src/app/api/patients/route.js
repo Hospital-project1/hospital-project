@@ -1,4 +1,3 @@
-// app/api/users/route.js
 import { NextResponse } from "next/server";
 import connect from "@/lib/dbConnect";
 import User from "../../models/User";
@@ -69,15 +68,15 @@ export async function POST(request) {
   }
 }
 
-// GET - Get all users
+// GET - Get only patients
 export async function GET(request) {
   try {
     // Connect to database
     await connect();
     
-    // Find all users who aren't deleted
+    // Find only users with role "patient"
     const users = await User.find(
-      {},
+      { role: "patient" }, // Include only users with role "patient"
       "-password" // Exclude password field
     );
     
