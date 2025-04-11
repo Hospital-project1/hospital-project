@@ -1,139 +1,306 @@
-// app/api/users/[id]/route.js
+// // app/api/patients/[id]/route.js
+// import { NextResponse } from "next/server";
+// import connect from "../../../../lib/dbConnect";
+// import Patient from "../../../models/Patient";
+
+// // GET - Get patient by ID
+// export async function GET(request, { params }) {
+//   try {
+//     // Connect to database
+//     await connect();
+    
+//     // Get the patient ID from params
+//     const { id } = params;
+    
+//     // Find the patient by ID
+//     const patient = await Patient.findById(id);
+    
+//     // Check if patient exists
+//     if (!patient) {
+//       return NextResponse.json(
+//         { success: false, message: "Patient not found" },
+//         { status: 404 }
+//       );
+//     }
+    
+//     // Return the patient
+//     return NextResponse.json(
+//       { success: true, data: patient },
+//       { status: 200 }
+//     );
+//   } catch (error) {
+//     console.error("Error fetching patient:", error);
+//     return NextResponse.json(
+//       { success: false, message: "Failed to fetch patient data" },
+//       { status: 500 }
+//     );
+//   }
+// }
+
+// // PUT - Update patient by ID
+// export async function PUT(request, { params }) {
+//   try {
+//     // Connect to database
+//     await connect();
+    
+//     // Get the patient ID from params
+//     const { id } = params;
+    
+//     // Parse the request body
+//     const body = await request.json();
+    
+//     // Find the patient by ID
+//     const patient = await Patient.findById(id);
+    
+//     // Check if patient exists
+//     if (!patient) {
+//       return NextResponse.json(
+//         { success: false, message: "Patient not found" },
+//         { status: 404 }
+//       );
+//     }
+    
+//     // Update the patient fields if provided
+//     if (body.name) patient.name = body.name;
+//     if (body.email) patient.email = body.email;
+//     if (body.phone !== undefined) patient.phone = body.phone;
+//     if (body.address !== undefined) patient.address = body.address;
+    
+//     // Save the updated patient
+//     const updatedPatient = await patient.save();
+    
+//     // Return the updated patient
+//     return NextResponse.json(
+//       { success: true, data: updatedPatient },
+//       { status: 200 }
+//     );
+//   } catch (error) {
+//     console.error("Error updating patient:", error);
+//     return NextResponse.json(
+//       { success: false, message: "Failed to update patient" },
+//       { status: 500 }
+//     );
+//   }
+// }
+
+// // DELETE - Soft delete patient by setting isDeleted to true
+// export async function DELETE(request, { params }) {
+//   try {
+//     // Connect to database
+//     await connect();
+    
+//     // Get the patient ID from params
+//     const { id } = params;
+    
+//     // Find the patient by ID
+//     const patient = await Patient.findById(id);
+    
+//     // Check if patient exists
+//     if (!patient) {
+//       return NextResponse.json(
+//         { success: false, message: "Patient not found" },
+//         { status: 404 }
+//       );
+//     }
+    
+//     // Set isDeleted to true (soft delete)
+//     patient.isDeleted = true;
+    
+//     // Save the updated patient
+//     await patient.save();
+    
+//     // Return success message
+//     return NextResponse.json(
+//       { success: true, message: "Patient deleted successfully" },
+//       { status: 200 }
+//     );
+//   } catch (error) {
+//     console.error("Error deleting patient:", error);
+//     return NextResponse.json(
+//       { success: false, message: "Failed to delete patient" },
+//       { status: 500 }
+//     );
+//   }
+// }
+
+// // app/api/patients/route.js
+// import { NextResponse } from "next/server";
+// import connect from "../../../lib/dbConnect";
+// import Patient from "../../models/Patient";
+
+// // GET - Get all patients (non-deleted ones)
+// export async function GET(request) {
+//   try {
+//     // Connect to database
+//     await connect();
+    
+//     // Find all non-deleted patients
+//     const patients = await Patient.find({ isDeleted: { $ne: true } }).sort({ createdAt: -1 });
+    
+//     // Return the patients
+//     return NextResponse.json(
+//       { success: true, data: patients },
+//       { status: 200 }
+//     );
+//   } catch (error) {
+//     console.error("Error fetching patients:", error);
+//     return NextResponse.json(
+//       { success: false, message: "Failed to fetch patients" },
+//       { status: 500 }
+//     );
+//   }
+// }
+
+// // POST - Create a new patient
+// export async function POST(request) {
+//   try {
+//     // Connect to database
+//     await connect();
+    
+//     // Parse the request body
+//     const body = await request.json();
+    
+//     // Create a new patient
+//     const patient = new Patient(body);
+    
+//     // Save the patient
+//     await patient.save();
+    
+//     // Return the newly created patient
+//     return NextResponse.json(
+//       { success: true, data: patient },
+//       { status: 201 }
+//     );
+//   } catch (error) {
+//     console.error("Error creating patient:", error);
+//     return NextResponse.json(
+//       { success: false, message: "Failed to create patient" },
+//       { status: 500 }
+//     );
+//   }
+// }
+
+
+// app/api/patients/[id]/route.js
 import { NextResponse } from "next/server";
 import connect from "../../../../lib/dbConnect";
-import User from "../../../models/User";
-import bcrypt from "bcryptjs";
+import Patient from "../../../models/User";
 
-// GET - Get user by ID
-export async function GET(request, { params }) {
+// GET - Get patient by ID
+export async function GET(request, context) {
   try {
     // Connect to database
     await connect();
     
-    // Get the user ID from params
-    const { id } = params;
+    // Get the patient ID from context.params
+    const id = context.params.id;
     
-    // Find the user by ID
-    const user = await User.findById(id).select("-password");
+    // Find the patient by ID
+    const patient = await Patient.findById(id);
     
-    // Check if user exists
-    if (!user) {
+    // Check if patient exists
+    if (!patient) {
       return NextResponse.json(
-        { success: false, message: "User not found" },
+        { success: false, message: "Patient not found" },
         { status: 404 }
       );
     }
     
-    // Return the user
+    // Return the patient
     return NextResponse.json(
-      { success: true, data: user },
+      { success: true, data: patient },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching user:", error);
+    console.error("Error fetching patient:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to fetch user data" },
+      { success: false, message: "Failed to fetch patient data" },
       { status: 500 }
     );
   }
 }
 
-// PUT - Update user by ID
-export async function PUT(request, { params }) {
+// PUT - Update patient by ID
+export async function PUT(request, context) {
   try {
     // Connect to database
     await connect();
     
-    // Get the user ID from params
-    const { id } = params;
+    // Get the patient ID from context.params
+    const id = context.params.id;
     
     // Parse the request body
     const body = await request.json();
     
-    // Find the user by ID
-    const user = await User.findById(id);
+    // Find the patient by ID
+    const patient = await Patient.findById(id);
     
-    // Check if user exists
-    if (!user) {
+    // Check if patient exists
+    if (!patient) {
       return NextResponse.json(
-        { success: false, message: "User not found" },
+        { success: false, message: "Patient not found" },
         { status: 404 }
       );
     }
     
-    // Update the user fields if provided
-    if (body.name) user.name = body.name;
-    if (body.email) user.email = body.email;
-    if (body.password) {
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(body.password, salt);
-    }
-    if (body.role) user.role = body.role;
-    if (body.phone !== undefined) user.phone = body.phone;
-    if (body.address !== undefined) user.address = body.address;
-    if (body.profilePicture !== undefined) user.profilePicture = body.profilePicture;
-    if (body.socialLogin !== undefined) user.socialLogin = body.socialLogin;
+    // Update the patient fields if provided
+    if (body.name) patient.name = body.name;
+    if (body.email) patient.email = body.email;
+    if (body.phone !== undefined) patient.phone = body.phone;
+    if (body.address !== undefined) patient.address = body.address;
     
-    // Update isDeleted and isBlocked fields if provided
-    if (body.isDeleted !== undefined) user.isDeleted = body.isDeleted;
-    if (body.isBlocked !== undefined) user.isBlocked = body.isBlocked;
+    // Save the updated patient
+    const updatedPatient = await patient.save();
     
-    // Save the updated user
-    const updatedUser = await user.save();
-    
-    // Remove password from response
-    const userResponse = updatedUser.toObject();
-    delete userResponse.password;
-    
-    // Return the updated user
+    // Return the updated patient
     return NextResponse.json(
-      { success: true, data: userResponse },
+      { success: true, data: updatedPatient },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error updating user:", error);
+    console.error("Error updating patient:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to update user" },
+      { success: false, message: "Failed to update patient" },
       { status: 500 }
     );
   }
 }
 
-// DELETE - Soft delete user by setting isDeleted to true
-export async function DELETE(request, { params }) {
+// DELETE - Soft delete patient by setting isDeleted to true
+export async function DELETE(request, context) {
   try {
     // Connect to database
     await connect();
     
-    // Get the user ID from params
-    const { id } = params;
+    // Get the patient ID from context.params
+    const id = context.params.id;
     
-    // Find the user by ID
-    const user = await User.findById(id);
+    // Find the patient by ID
+    const patient = await Patient.findById(id);
     
-    // Check if user exists
-    if (!user) {
+    // Check if patient exists
+    if (!patient) {
       return NextResponse.json(
-        { success: false, message: "User not found" },
+        { success: false, message: "Patient not found" },
         { status: 404 }
       );
     }
     
     // Set isDeleted to true (soft delete)
-    user.isDeleted = true;
+    patient.isDeleted = true;
     
-    // Save the updated user
-    await user.save();
+    // Save the updated patient
+    await patient.save();
     
     // Return success message
     return NextResponse.json(
-      { success: true, message: "User deleted successfully" },
+      { success: true, message: "Patient deleted successfully" },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error deleting user:", error);
+    console.error("Error deleting patient:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to delete user" },
+      { success: false, message: "Failed to delete patient" },
       { status: 500 }
     );
   }
