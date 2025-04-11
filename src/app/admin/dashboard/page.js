@@ -36,7 +36,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       {/* <h1 className="text-2xl font-bold text-[#DDDFDE]">Dashboard Overview</h1> */}
-{/*       
+      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <DashboardMetricCard 
           title="Total Patients" 
@@ -66,10 +66,10 @@ export default function Dashboard() {
           icon="feedback" 
           accentColor="#CE592C"
         />
-      </div> */}
+      </div>
       
       {/* Rest of the dashboard remains the same */}
-      {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-[#DDDFDE]/10 rounded-lg p-4">
           <h2 className="text-xl font-semibold mb-4 text-[#DDDFDE]">Revenue Overview</h2>
           <RevenueChart />
@@ -78,12 +78,12 @@ export default function Dashboard() {
           <h2 className="text-xl font-semibold mb-4 text-[#DDDFDE]">Upcoming Appointments</h2>
           <UpcomingAppointments />
         </div>
-      </div> */}
-{/*       
+      </div>
+      
       <div className="bg-[#DDDFDE]/10 rounded-lg p-4">
         <h2 className="text-xl font-semibold mb-4 text-[#DDDFDE]">Recent Patients</h2>
         <RecentPatients />
-      </div> */}
+      </div>
     </div>
   );
 }
