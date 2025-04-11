@@ -74,28 +74,24 @@ export default function AnalyticsPage() {
             title="Total Users"
             value={data.userCount}
             icon={<Users className="text-indigo-500" size={24} />}
-            trend="+12%"
-            
+           
           />
           <StatCard
             title="Total Doctors"
             value={data.doctorCount}
             icon={<UserPlus className="text-emerald-500" size={24} />}
-            trend="+5%"
             
           />
           <StatCard
             title="Appointments"
             value={data.appointmentCount}
             icon={<Calendar className="text-amber-500" size={24} />}
-            trend="+18%"
-           
+            
           />
           <StatCard
             title="Revenue"
-            value={`$${data.totalRevenue}`}
+            value={`jD ${data.totalRevenue}`}
             icon={<DollarSign className="text-rose-500" size={24} />}
-            trend="+7%"
             
           />
         </div>
@@ -104,7 +100,6 @@ export default function AnalyticsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Bar Chart */}
           <div className=" p-6 rounded-xl shadow-sm border border-gray-700">
-            {" "}
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-gray-100">Summary</h2>
               <TrendingUp className="text-indigo-500" size={20} />
@@ -147,7 +142,6 @@ export default function AnalyticsPage() {
 
           {/* Pie Chart */}
           <div className=" p-6 rounded-xl shadow-sm border border-gray-700">
-            {" "}
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-gray-100">
                 Doctor Specialties
@@ -194,37 +188,8 @@ export default function AnalyticsPage() {
             </ResponsiveContainer>
           </div>
 
-          <div className=" p-6 rounded-xl shadow-sm border border-gray-700 mt-6">
-            <h2 className="text-xl font-semibold text-gray-100 mb-4">
-              Latest Appointments
-            </h2>
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-sm">
-                <thead className="bg-gray-700 text-gray-100 uppercase text-xs">
-                  <tr>
-                    <th className="px-4 py-3 text-left">Patient</th>
-                    <th className="px-4 py-3 text-left">Doctor</th>
-                    <th className="px-4 py-3 text-left">Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.latestAppointments.map((appt) => (
-                    <tr key={appt._id} className="border-t border-gray-700">
-                      <td className="px-4 py-2">
-                        {appt.patient?.name || "Unknown"}
-                      </td>
-                      <td className="px-4 py-2">
-                        {appt.doctor?.name || "Unknown"}
-                      </td>
-                      <td className="px-4 py-2">
-                        {new Date(appt.createdAt).toLocaleDateString()}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+     
+          
         </div>
       </div>
     </div>

@@ -11,7 +11,7 @@ const iconComponents = {
 export default function DashboardMetricCard({
   title,
   value,
-  trend = "+0%", // قيمة افتراضية
+  trend = " ", // قيمة افتراضية
   icon,
   accentColor,
 }) {
@@ -41,7 +41,7 @@ export default function DashboardMetricCard({
           >
             {trend}
           </span>
-          <span className="text-[#DDDFDE]/70 ml-1">since last month</span>
+          {/* <span className="text-[#DDDFDE]/70 ml-1">since last month</span> */}
         </p>
       )}
     </div>

@@ -18,10 +18,10 @@ export default function DashboardSidebar() {
     { name: 'Patients', href: '/admin/dashboard/patients', icon: UsersIcon },
     { name: 'Doctors', href: '/admin/dashboard/doctors', icon: UserPlusIcon },
     { name: 'Appointments', href: '/admin/dashboard/appointments', icon: CalendarIcon },
-    { name: 'Schedules', href: '/admin/dashboard/schedules', icon: ClipboardIcon },
+    // { name: 'Schedules', href: '/admin/dashboard/schedules', icon: ClipboardIcon },
     { name: 'Billing', href: '/admin/dashboard/billing', icon: CreditCardIcon },
-    { name: 'Analytics', href: '/admin/dashboard/analytics', icon: ChartBarIcon },
-    { name: 'Feedback', href: '/admin/dashboard/feedback', icon: MessageSquareIcon },
+    // { name: 'Analytics', href: '/admin/dashboard/analytics', icon: ChartBarIcon },
+    // { name: 'Feedback', href: '/admin/dashboard/feedback', icon: MessageSquareIcon },
     { name: 'contact', href: '/admin/dashboard/contact', icon: MessageSquareIcon },
   ];
   return (

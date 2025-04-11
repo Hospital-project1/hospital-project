@@ -6,7 +6,6 @@ import Joi from 'joi';
 import dbConnect from '@/lib/dbConnect';
 import User from '@/app/models/User';
 
-// Your Joi login schema
 const loginSchema = Joi.object({
   email: Joi.string().email().required().messages({
     'string.email': 'Please provide a valid email address.',
@@ -24,7 +23,6 @@ export async function POST(req) {
     await dbConnect();
     const body = await req.json();
 
-    // 1) Validate input
     const { error } = loginSchema.validate(body, { abortEarly: false });
     if (error) {
       return NextResponse.json(
@@ -38,7 +36,6 @@ export async function POST(req) {
 
     const { email, password } = body;
 
-    // 2) Find user by email
     const user = await User.findOne({ email });
     if (!user) {
       return NextResponse.json(
@@ -47,7 +44,16 @@ export async function POST(req) {
       );
     }
 
-    // 3) Compare password
+    if (user.isDeleted) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: "This account has been deactivated. Please contact support." 
+        },
+        { status: 403 } 
+      );
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return NextResponse.json(
@@ -56,14 +62,12 @@ export async function POST(req) {
       );
     }
 
-    // 4) Generate token
     const token = jwt.sign(
       { userId: user._id, name: user.name, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
 
-    // 5) Return response + cookie
     const response = NextResponse.json(
       {
         success: true,

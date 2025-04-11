@@ -74,7 +74,7 @@ export default function BillingPage() {
       <h1 className="text-2xl font-bold">Billing Overview</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <MetricCard title="Total Revenue" value={`$${totalRevenue}`} />
+        <MetricCard title="Total Revenue" value={`JD ${totalRevenue}`} />
         <MetricCard title="Paid Bills" value={paidBills} />
         <MetricCard title="Pending Bills" value={pendingBills} />
       </div>

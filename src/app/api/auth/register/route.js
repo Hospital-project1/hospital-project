@@ -6,7 +6,6 @@ import Joi from 'joi';
 import dbConnect from '@/lib/dbConnect';
 import User from '@/app/models/User';
 
-// Adapt your Joi schema:
 const registerSchema = Joi.object({
     name: Joi.string().required().messages({
       'any.required': 'Name is required.',
@@ -37,16 +36,13 @@ const registerSchema = Joi.object({
   });
   
 
-// App Router uses a function like POST/GET/PUT, etc.
 export async function POST(req) {
   try {
-    // 1) Connect to DB
+
     await dbConnect();
 
-    // 2) Parse request body
     const body = await req.json();
 
-    // 3) Validate input with Joi
     const { error } = registerSchema.validate(body, { abortEarly: false });
     if (error) {
       return NextResponse.json(
@@ -60,7 +56,6 @@ export async function POST(req) {
 
     const { name, email, password, phone } = body;
 
-    // 4) Check if user exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
@@ -69,19 +64,16 @@ export async function POST(req) {
       );
     }
 
-    // 5) Hash password & create new user
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ name, email, password: hashedPassword, phone });
     await newUser.save();
 
-    // 6) Generate JWT
     const token = jwt.sign(
       { userId: newUser._id, name:newUser.name, role: newUser.role },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
 
-    // 7) Return response + set cookie
     const response = NextResponse.json(
       {
         success: true,
@@ -97,7 +89,6 @@ export async function POST(req) {
       { status: 201 }
     );
 
-    // Set cookie on the response
     response.cookies.set('token', token, {
       httpOnly: true,
       secure: false, 
