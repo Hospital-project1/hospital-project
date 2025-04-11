@@ -164,41 +164,36 @@ export default function Home() {
 
  {/* نبذة بسيطة   */}
 
- <div className="relative bg-gray-100 mt-20 mb-20">
-  {/* صورة الخلفية */}
+ <div className="relative bg-gray-100 mt-20 mb-50">
+  {/* Background Image */}
   <div
-    className="absolute inset-0 bg-cover bg-center min-h-screen "
+    className="absolute inset-0 bg-cover bg-center min-h-screen opacity-20"
     style={{
-      backgroundImage: `url("https://images.pexels.com/photos/5355851/pexels-photo-5355851.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")`,
+      backgroundImage: `url("https://images.pexels.com/photos/5998448/pexels-photo-5998448.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")`,
     }}
   ></div>
-
-  {/* محتوى النص فوق الخلفية */}
-  <div className="relative px-6 py-12 md:p-16 z-10 ">
+  
+  {/* Content overlay */}
+  <div className="relative px-6 py-16 md:py-24 md:px-16 z-10">
     <div className="container mx-auto text-gray-800">
-      <h2 className="text-lg text-gray-700">Dr. sara Dweik</h2>
-
-      <div className="mt-5 mb-8">
-        <h1 className="text-5xl font-bold">
+      <h2 className="text-lg text-gray-700 font-medium tracking-wide">Dr. Sara Dweik</h2>
+      
+      <div className="mt-4 mb-8">
+        <h1 className="text-4xl md:text-5xl font-bold">
           <span className="text-gray-800">OUR </span>
           <span className="text-teal-500">TEAM</span>
         </h1>
       </div>
-
+      
       <div className="w-full md:w-2/3">
-      <p className="text-gray-800 text-lg mb-8 font-medium mt-15" style={{ whiteSpace: 'pre-line' }}>
-  Dr. Stephanie Wosniack is dedicated to
-  providing her patients with the
-  best possible care. We at MediCare
-  are focused on helping you. After
-  receiving successful care for
-  various aches and pains over the years, Dr.
-  Woshiack found her calling to help others get well.
-</p>
-
-
-        <div className="mt-60">
-          <button className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-3 uppercase font-medium">
+        <p className="text-gray-800 text-base md:text-lg leading-relaxed mb-12 font-medium">
+        Dr. Sara Dweik is dedicated to providing her patients with the best possible care. 
+          We at MediCare are focused on helping you. After receiving successful care for various 
+          aches and pains over the years, Dr. Woshiack found her calling to help others get well.
+        </p>
+        
+        <div className="mt-8 md:mt-12">
+          <button className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-3 uppercase font-medium transition duration-300">
             Find out more
           </button>
         </div>

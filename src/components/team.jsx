@@ -78,11 +78,11 @@ const DoctorCard = ({ doctor, onClick }) => {
           </div>
           
           <button 
-            onClick={() => onClick(doctor)}
-            className="text-teal-500 hover:text-teal-700 flex items-center gap-1 font-medium text-sm transition-colors"
-          >
-            View Profile <FaPlus size={12} />
-          </button>
+  onClick={() => router.push(`/doctors/${doctor.id}`)}
+  className="text-teal-500 hover:text-teal-700 flex items-center gap-1 font-medium text-sm transition-colors"
+>
+  View Profile <FaPlus size={12} />
+</button>
         </div>
       </div>
     </div>
@@ -191,7 +191,7 @@ const DoctorTeamGrid = () => {
       name: "Sussie Wolff",
       title: "Pediatrician",
       specialty: "pediatrician",
-      description: "Proin consequat, at commodo. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      description: "A physician/doctor in pediatrics is a medical practitioner that works directly with children.",
       fullDescription: "Dr. Sussie Wolff specializes in the health of infants, children, and adolescents. With over 10 years of experience, she focuses on preventive health care and treats children who are acutely or chronically ill.",
       imageUrl: "https://images.pexels.com/photos/7446991/pexels-photo-7446991.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
       education: [
@@ -208,7 +208,7 @@ const DoctorTeamGrid = () => {
       name: "Ashley Willson",
       title: "Dental surgeon",
       specialty: "dental",
-      description: "Vivamus sapien ligula, tempus ac ipsum ac, mattis luctus magna. Proin consequat, at commodo.",
+      description: "Cardiologists specialize in diagnosing and treating diseases of the cardiovascular system.",
       fullDescription: "Dr. Ashley Willson is a skilled dental surgeon with expertise in oral surgery, implantology, and restorative dentistry. She is committed to providing painless dental treatments with the latest technologies.",
       imageUrl: "https://images.pexels.com/photos/19596247/pexels-photo-19596247/free-photo-of-portrait-of-smiling-black-woman-doctor-in-medical-robe.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
       education: [
@@ -225,7 +225,7 @@ const DoctorTeamGrid = () => {
       name: "Gabriela Beckett",
       title: "Cosmetic Surgeon",
       specialty: "cosmetic",
-      description: "Donec varius libero tortor. Proin consequat, at commodo eu luctus ipsum aliquet ut surgeon specializing in.",
+      description: "A typical day includes patient consultations, skin biopsies, cosmetic procedures, and diagnosing skin disorders.",
       fullDescription: "Dr. Gabriela Beckett is a board-certified cosmetic surgeon specializing in facial rejuvenation, body contouring, and minimally invasive procedures. She combines artistic vision with surgical precision to achieve natural-looking results.",
       imageUrl: "https://images.pexels.com/photos/15960473/pexels-photo-15960473/free-photo-of-a-doctor-putting-on-rubber-gloves.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2https://images.pexels.com/photos/6129121/pexels-photo-6129121.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
       education: [
@@ -243,8 +243,7 @@ const DoctorTeamGrid = () => {
       name: "George Button",
       title: "General Doctor",
       specialty: "general",
-      description: "Curabitur lobortis, eros eu efficitur lacinia. Proin consequat, at commodo velit magna cursus nisi.",
-      fullDescription: "Dr. George Button is a compassionate general practitioner with extensive experience in diagnosing and treating a wide range of medical conditions. He focuses on preventive care and building long-term relationships with his patients.",
+      description: "General practitioners diagnose and treat a wide range of conditions and refer patients to specialists when necessary.",
       imageUrl: "https://images.pexels.com/photos/4930708/pexels-photo-4930708.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
       education: [
         "MD, Stanford University School of Medicine",
@@ -256,6 +255,8 @@ const DoctorTeamGrid = () => {
       ]
     }
   ];
+  
+
   
   const handleDoctorClick = (doctor) => {
     setSelectedDoctor(doctor);
@@ -273,7 +274,8 @@ const DoctorTeamGrid = () => {
     <div className="bg-gray-100 py-16 px-4">
       <div className="container mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Meet Our Specialists</h2>
+        <h2 className="text-3xl font-bold uppercase text-gray-800 mb-2">Meet Our Team</h2>
+        <div className="w-16 h-1 bg-teal-500 mx-auto mb-4"></div>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Our team of highly qualified doctors with different specializations are ready to provide the best medical care for you and your family.
           </p>

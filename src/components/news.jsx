@@ -13,7 +13,7 @@ const NewsCard = ({ date, title, description, imageUrl }) => {
           layout="fill"
           objectFit="cover"
         />
-        <div className="absolute bottom-4 left-4">
+        <div className="absolute bottom-2 left-4">
           <button className="bg-teal-500 text-white w-8 h-8 rounded-full flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
@@ -42,21 +42,21 @@ const LatestNews = () => {
       date: 'October 18, 2015',
       title: '2015 Best USA Hospitals and Clinics',
       description: 'Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.',
-      imageUrl: '/images/hospital.jpg'
+      imageUrl: 'https://images.pexels.com/photos/668300/pexels-photo-668300.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
     },
     {
       id: 2,
       date: 'September 22, 2015',
       title: 'Are drugs the best solution?',
       description: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ulla.',
-      imageUrl: '/images/drugs.jpg'
+      imageUrl: 'https://images.pexels.com/photos/4058364/pexels-photo-4058364.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
     },
     {
       id: 3,
       date: 'September 8, 2015',
       title: 'Negative statin stories add to heart health risk',
       description: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ulla.',
-      imageUrl: '/images/heart.jpg'
+      imageUrl: 'https://images.pexels.com/photos/6291261/pexels-photo-6291261.jpeg?auto=compress&cs=tinysrgb&w=600'
     }
   ];
 
