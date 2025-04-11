@@ -12,7 +12,7 @@ export default function PatientsPage() {
     const fetchPatients = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:3000/api/patients');
+        const response = await fetch('/api/patients');
         
         if (!response.ok) {
           throw new Error('Failed to fetch patients');
@@ -42,7 +42,7 @@ export default function PatientsPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-[#DDDFDE]">Patient Records</h1>
         <Link 
-          href="/dashboard/patients/add" 
+          href="/admin/dashboard/patients/add" 
           className="px-4 py-2 bg-[#0CB8B6] text-white rounded-md hover:bg-[#0CB8B6]/90 transition-colors"
         >
           Add New Patient
