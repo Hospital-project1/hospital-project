@@ -22,7 +22,7 @@ export default function DoctorModal({ isOpen, onClose, mode, doctor, onSubmit, o
   
   const [errors, setErrors] = useState({});
   
-  const specialties = ["Orthopedist", "Internist", "Dermatologist", "ENT Doctor", "General Physician"];
+  const specialties = ["Orthopedist", "	Internist", "Dermatologist" ,"ENT Doctor" ,"doctor"];
   const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   
   // Update data when selected doctor changes
