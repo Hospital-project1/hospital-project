@@ -1,98 +1,172 @@
 import { NextResponse } from 'next/server';
-import  dbConnect from '@/lib/dbConnect';
+import dbConnect from '@/lib/dbConnect';
 import Doctor from '@/app/models/Doctor';
 import Patient from '@/app/models/Patient';
 import Appointment from '@/app/models/Appointment';
-import { cookies } from 'next/headers';
-import jwt from 'jsonwebtoken';
+import Prescription from '@/app/models/Prescription';
+import User from '@/app/models/User'; 
+import mongoose from 'mongoose';
 
 export async function GET(request, { params }) {
   await dbConnect();
 
   try {
-    // 1. جلب التوكن من الكوكيز (باستخدام await)
-    const cookieStore = await cookies();
-    const token = cookieStore.get('token')?.value;
+    const id = params?.id;
+    console.log('Received doctor ID:', id);
 
-    // 2. التحقق من وجود التوكن
-    if (!token) {
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json(
-        { success: false, error: 'غير مصرح - لا يوجد توكن' },
-        { status: 401 }
-      );
-    }
-
-    // 3. فك تشفير التوكن مع معالجة الأخطاء
-    let decoded;
-    try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET);
-    } catch (jwtError) {
-      if (jwtError.name === 'TokenExpiredError') {
-        return NextResponse.json(
-          { success: false, error: 'انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى' },
-          { status: 401 }
-        );
-      }
-      return NextResponse.json(
-        { success: false, error: 'توكن غير صالح' },
-        { status: 401 }
-      );
-    }
-
-    // 4. التحقق من الصلاحية (طبيب أو مدير)
-    if (decoded.role !== 'doctor' && decoded.role !== 'admin') {
-      return NextResponse.json(
-        { success: false, error: 'غير مصرح - صلاحيات غير كافية' },
-        { status: 403 }
-      );
-    }
-
-    // 5. استخدام رقم الطبيب من الرابط
-    const doctorId = params.id;
-
-    // التحقق من صحة معرف الطبيب
-    if (!doctorId || doctorId.length !== 24) {
-      return NextResponse.json(
-        { success: false, error: 'معرف الطبيب غير صالح' },
+        { 
+          success: false, 
+          error: 'Invalid doctor ID',
+          message: 'Please provide a valid 24-character doctor ID'
+        },
         { status: 400 }
       );
     }
 
-    // 6. جلب بيانات الطبيب من قاعدة البيانات
-    const doctor = await Doctor.findById(doctorId)
-      .populate('user', 'name email phone')
-      .populate('specialty', 'name');
+    const doctorId = new mongoose.Types.ObjectId(id);
+
+    const [
+      doctor, 
+      patientCount, 
+      appointmentStats,
+      recentPatients,
+      upcomingAppointments
+    ] = await Promise.all([
+      Doctor.findById(doctorId)
+        .populate({
+          path: 'user',
+          model: 'User',
+          select: 'name email phone profilePicture'
+        })
+        .populate({
+          path: 'specialty',
+          select: 'name'
+        }),
+      
+      Patient.countDocuments({ doctor: doctorId }),
+      
+      Appointment.aggregate([
+        { $match: { doctor: doctorId } },
+        { $group: { _id: '$status', count: { $sum: 1 } } }
+      ]),
+      
+      Patient.find({ doctor: doctorId })
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .populate({
+          path: 'user',
+          model: 'User',
+          select: 'name email phone profilePicture'
+        }),
+      
+      Appointment.find({
+        doctor: doctorId,
+        appointmentDate: { 
+          $gte: new Date(), 
+          $lte: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) 
+        },
+        status: { $in: ['pending', 'confirmed'] }
+      })
+      .sort({ appointmentDate: 1 })
+      .populate({
+        path: 'patient',
+        populate: {
+          path: 'user',
+          model: 'User',
+          select: 'name profilePicture'
+        }
+      })
+    ]);
+
+    let recentPrescriptions = [];
+    try {
+      recentPrescriptions = await Prescription.find({ doctor: doctorId })
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .populate({
+          path: 'patient',
+          populate: {
+            path: 'user',
+            model: 'User',
+            select: 'name'
+          }
+        });
+    } catch (prescriptionError) {
+      console.warn('Could not fetch prescriptions:', prescriptionError.message);
+    }
 
     if (!doctor) {
       return NextResponse.json(
-        { success: false, error: 'الطبيب غير موجود' },
+        { success: false, error: 'Doctor not found' },
         { status: 404 }
       );
     }
 
-    // 7. جلب المرضى والمواعيد
-    const [patients, appointments] = await Promise.all([
-      Patient.find({ doctor: doctorId })
-        .populate('user', 'name phone')
-        .limit(5),
-      Appointment.find({
-        doctor: doctorId,
-        appointmentDate: { $gte: new Date() }
-      })
-      .populate('patient', 'user')
-      .sort({ appointmentDate: 1 })
-      .limit(5)
-    ]);
+    const statusStats = appointmentStats.reduce((acc, curr) => {
+      acc[curr._id] = curr.count;
+      return acc;
+    }, {});
+
+    const totalAppointments = Object.values(statusStats).reduce((a, b) => a + b, 0);
+
+    const overviewData = {
+      doctorInfo: {
+        id: doctor._id,
+        name: doctor.user.name,
+        email: doctor.user.email,
+        phone: doctor.user.phone,
+        profilePicture: doctor.user.profilePicture,
+        specialty: doctor.specialty?.name || 'General Practitioner'
+      },
+      stats: {
+        totalPatients: patientCount,
+        totalAppointments,
+        appointmentStatus: statusStats,
+        upcomingAppointments: upcomingAppointments.length
+      },
+      recentPatients: recentPatients.map(patient => ({
+        id: patient._id,
+        name: patient.user.name,
+        email: patient.user.email,
+        phone: patient.user.phone,
+        profilePicture: patient.user.profilePicture,
+        lastVisit: patient.createdAt
+      })),
+      upcomingAppointments: upcomingAppointments.map(appt => ({
+        id: appt._id,
+        patientName: appt.patient.user.name,
+        patientAvatar: appt.patient.user.profilePicture,
+        date: appt.appointmentDate,
+        time: appt.timeSlot,
+        type: appt.appointmentType,
+        status: appt.status
+      })),
+      recentPrescriptions: recentPrescriptions.map(pres => ({
+        id: pres._id,
+        patientName: pres.patient?.user?.name || 'Unknown',
+        date: pres.createdAt,
+        medication: pres.medication ? 
+          (pres.medication.slice(0, 3).map(m => m.name).join(', ') + 
+          (pres.medication.length > 3 ? '...' : '')) : 
+          'No medications'
+      }))
+    };
 
     return NextResponse.json({
       success: true,
-      data: { doctor, patients, appointments }
+      data: overviewData
     });
 
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Doctor overview error:', error);
     return NextResponse.json(
-      { success: false, error: 'خطأ في الخادم الداخلي' },
+      { 
+        success: false, 
+        error: 'Internal server error',
+        message: error.message 
+      },
       { status: 500 }
     );
   }

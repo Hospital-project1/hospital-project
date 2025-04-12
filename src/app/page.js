@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import HeroSection from '@/components/Hero';
+import DoctorTeamGrid from "@/components/team"
+import LatestNews from "@/components/news"
 
 export default function Home() {
   const [hoveredCategory, setHoveredCategory] = useState(null);
@@ -80,11 +82,11 @@ export default function Home() {
   return (
     <>
     <HeroSection/>
-    <div className="container mx-auto px-4 py-8">
-    <h2 className="relative text-3xl font-bold text-center mb-12">
+    <div className="container mx-auto px-4 py-8 mt-20">
+    <h2 className="relative text-3xl font-bold text-center mb-25">
   {/* Decorative underline with gradient colors */}
   <span className="relative inline-block">
-    <span className="absolute -bottom-4 left-0 right-0 h-1 bg-gradient-to-r from-[#0CB8B6] via-[#CE592C] to-[#DDDFDE]"></span>
+    <span className="absolute -bottom-4 left-0 right-0 h-1 bg-gradient-to-r from-[#0CB8B6] via-[#CE592C] to-[#DDDFDE]" ></span>
     Our Departments
   </span>
   
@@ -158,6 +160,62 @@ export default function Home() {
     </div>
   </div>
 </div>
+
+
+ {/* نبذة بسيطة   */}
+
+ <div className="relative bg-gray-100 mt-20 mb-50">
+  {/* Background Image */}
+  <div
+    className="absolute inset-0 bg-cover bg-center min-h-screen opacity-20"
+    style={{
+      backgroundImage: `url("https://images.pexels.com/photos/5998448/pexels-photo-5998448.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")`,
+    }}
+  ></div>
+  
+  {/* Content overlay */}
+  <div className="relative px-6 py-16 md:py-24 md:px-16 z-10">
+    <div className="container mx-auto text-gray-800">
+      <h2 className="text-lg text-gray-700 font-medium tracking-wide">Dr. Sara Dweik</h2>
+      
+      <div className="mt-4 mb-8">
+        <h1 className="text-4xl md:text-5xl font-bold">
+          <span className="text-gray-800">OUR </span>
+          <span className="text-teal-500">TEAM</span>
+        </h1>
+      </div>
+      
+      <div className="w-full md:w-2/3">
+        <p className="text-gray-800 text-base md:text-lg leading-relaxed mb-12 font-medium">
+        Dr. Sara Dweik is dedicated to providing her patients with the best possible care. 
+          We at MediCare are focused on helping you. After receiving successful care for various 
+          aches and pains over the years, Dr. Woshiack found her calling to help others get well.
+        </p>
+        
+        <div className="mt-8 md:mt-12">
+          <button className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-3 uppercase font-medium transition duration-300">
+            Find out more
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<DoctorTeamGrid/>
+<LatestNews/>
+<iframe 
+  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d108264.69324993144!2d36.07711067579379!3d32.007754103535824!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151ca0113f2c4721%3A0xfc2551f906fd8ec4!2z2KfZhNmF2LPYqti02YHZiSDYp9mE2KrYrti12LXZig!5e0!3m2!1sar!2sjo!4v1744229521129!5m2!1sar!2sjo"
+  width="100%"  // جعل العرض 100% من عرض الصفحة
+  height="500px"  
+  style={{ border: 0 }}
+  allowFullScreen
+  loading="lazy"
+  referrerPolicy="no-referrer-when-downgrade"
+/>
+
+
+
     </>
   );
 }

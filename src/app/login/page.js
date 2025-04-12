@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { AuthContext } from "../context/AuthContext";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,6 +14,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const { setUser } = useContext(AuthContext);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -23,14 +25,21 @@ export default function LoginPage() {
         email,
         password,
       });
-      
+      const { user } = response.data;
+      setUser(user);
       toast.success(response.data.message || "Login successful!");
-      
+
       setTimeout(() => {
+      if (user.role === "admin") {
+      router.push("/admin/dashboard");
+      } else if (user.role === "doctor") {
+        router.push("/doctorOverview");
+      } else {
         router.push("/");
-      }, 2000);
-    } catch (error) {
-      toast.error(error.response?.data?.message || "An error occurred");
+      }}, 2000);
+      
+    } catch (err) {
+      toast.error(err.response?.data?.message || "An error occurred");
     } finally {
       setIsLoading(false);
     }

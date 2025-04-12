@@ -3,16 +3,15 @@ import dbConnect from '@/lib/dbConnect';
 import User from '@/app/models/User';
 import jwt from 'jsonwebtoken';
 
-// Helper function to verify JWT token
 async function verifyToken(req) {
-  const cookies = req.cookies.get('token'); // Extract token from cookies
+  const cookies = req.cookies.get('token'); 
   if (!cookies) {
     return { success: false, message: 'No token provided', status: 401 };
   }
 
   const token = cookies.value;
   try {
-    // Verify the JWT token
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     return { success: true, decoded };
   } catch (error) {
@@ -20,19 +19,16 @@ async function verifyToken(req) {
   }
 }
 
-// GET Profile: Fetch the user profile
 export async function GET(req) {
   try {
-    // 1) Connect to MongoDB
+
     await dbConnect();
 
-    // 2) Verify the JWT token using the helper function
     const { success, decoded, message, status } = await verifyToken(req);
     if (!success) {
       return NextResponse.json({ success: false, message }, { status });
     }
 
-    // 3) Fetch the user from the database
     const user = await User.findById(decoded.userId).select('-password');
     if (!user) {
       return NextResponse.json(
@@ -41,7 +37,6 @@ export async function GET(req) {
       );
     }
 
-    // 4) Return user profile
     return NextResponse.json({
       success: true,
       user: {
@@ -63,44 +58,67 @@ export async function GET(req) {
   }
 }
 
-// PUT Profile: Update the user profile
 export async function PUT(req) {
   try {
-    // 1) Connect to MongoDB
+
     await dbConnect();
 
-    // 2) Verify the JWT token using the helper function
     const { success, decoded, message, status } = await verifyToken(req);
     if (!success) {
       return NextResponse.json({ success: false, message }, { status });
     }
 
-    // 3) Fetch the user from the database
-    const user = await User.findById(decoded.userId);
-    if (!user) {
+    const body = await req.json();
+    const { name, email, phone, address, profilePicture } = body;
+
+    if (email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return NextResponse.json(
+          { success: false, message: 'Invalid email format' },
+          { status: 400 }
+        );
+      }
+
+      const existingUser = await User.findOne({ email, _id: { $ne: decoded.userId } });
+      if (existingUser) {
+        return NextResponse.json(
+          { success: false, message: 'Email already in use, please choose another' },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (phone) {
+      const phoneRegex = /^07\d{8}$/;
+      if (!phoneRegex.test(phone)) {
+        return NextResponse.json(
+          { success: false, message: 'Phone number must be 10 digits starting with 07' },
+          { status: 400 }
+        );
+      }
+    }
+
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (email) updateData.email = email;
+    if (phone) updateData.phone = phone;
+    if (address) updateData.address = address;
+    if (profilePicture) updateData.profilePicture = profilePicture;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      decoded.userId,
+      updateData,
+      { new: true, runValidators: true }
+    ).select('-password'); 
+
+    if (!updatedUser) {
       return NextResponse.json(
         { success: false, message: 'User not found' },
         { status: 404 }
       );
     }
 
-    // 4) Extract the update data from request body
-    const body = await req.json();
-    const { name, email, phone, address, profilePicture } = body;
-
-    // 5) Prepare update data
-    const updatedData = {
-      name: name || user.name, // Update if new value is provided
-      email: email || user.email,
-      phone: phone || user.phone,
-      address: address || user.address,
-      profilePicture: profilePicture || user.profilePicture,
-    };
-
-    // 6) Save the updated user
-    const updatedUser = await User.findByIdAndUpdate(user._id, updatedData, { new: true });
-
-    // 7) Return the updated profile
     return NextResponse.json({
       success: true,
       message: 'Profile updated successfully',
@@ -114,10 +132,11 @@ export async function PUT(req) {
         profilePicture: updatedUser.profilePicture || '',
       },
     });
+
   } catch (error) {
     console.error('Error updating profile:', error);
     return NextResponse.json(
-      { success: false, message: 'Server error' },
+      { success: false, message: 'Server error', error: error.message },
       { status: 500 }
     );
   }
