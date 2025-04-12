@@ -25,7 +25,7 @@ export default function PersonalInfoPage() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const { data } = await axios.get('/api/auth/profile');
+        const { data } = await axios.get('/api/auth/profile/personal');
         
         if (data.success) {
           setUserData(data.user);
@@ -63,7 +63,7 @@ export default function PersonalInfoPage() {
 
   const handleSave = async () => {
     try {
-      const { data } = await axios.put('/api/auth/profile', editData);
+      const { data } = await axios.put('/api/auth/profile/personal', editData);
       
       if (data.success) {
         setUserData(data.user);
