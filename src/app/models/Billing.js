@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const billingSchema = new Schema({
   patient: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User", // أو "Patient" حسب نموذجك
+    ref: "User", 
     required: true,
   },
   appointment: {

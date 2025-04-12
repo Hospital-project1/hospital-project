@@ -3,7 +3,13 @@ const Schema = mongoose.Schema;
 
 const doctorSchema = new Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  specialty: { type: mongoose.Schema.Types.ObjectId, ref: "Department", required: true },
+  specialty: {
+    type: String,
+    enum: ["Orthopedist", "	Internist", "Dermatologist" ,"ENT Doctor" ,"doctor"],
+    required: false,
+    default: "doctor",
+  },
+  
   availability: [
     {
       day: { type: String },
