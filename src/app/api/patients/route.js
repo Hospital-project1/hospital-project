@@ -109,12 +109,19 @@ export async function GET() {
     // Connect to database
     await connect();
     
-    // Find all non-deleted patients
-    const patients = await Patient.find({ isDeleted: { $ne: true } }).sort({ createdAt: -1 });
+    // Find all non-deleted patients with role 'patient'
+    const patients = await Patient.find({ 
+      role: 'patient',
+      isDeleted: false 
+    }).select('-password').sort({ createdAt: -1 });
     
     // Return the patients
     return NextResponse.json(
-      { success: true, data: patients },
+      { 
+        success: true, 
+        count: patients.length,
+        data: patients 
+      },
       { status: 200 }
     );
   } catch (error) {
@@ -135,15 +142,26 @@ export async function POST(request) {
     // Parse the request body
     const body = await request.json();
     
+    // Set default values for role and isDeleted
+    const patientData = {
+      ...body,
+      role: 'patient', // Force role to be patient
+      isDeleted: false // Default to false if not provided
+    };
+    
     // Create a new patient
-    const patient = new Patient(body);
+    const patient = new Patient(patientData);
     
     // Save the patient
     await patient.save();
     
+    // Remove password from response
+    const patientResponse = patient.toObject();
+    delete patientResponse.password;
+    
     // Return the newly created patient
     return NextResponse.json(
-      { success: true, data: patient },
+      { success: true, data: patientResponse },
       { status: 201 }
     );
   } catch (error) {

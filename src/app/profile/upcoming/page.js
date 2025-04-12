@@ -15,27 +15,30 @@ export default function UpcomingAppointmentsPage() {
     email: '',
     profilePicture: ''
   });
+  const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  
-  const upcomingAppointments = [
-    { id: "AP001", date: "2025-04-20", department: "Cardiology", doctor: "Dr. Smith" },
-    { id: "AP002", date: "2025-05-05", department: "General Checkup", doctor: "Dr. Davis" }
-  ];
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchData = async () => {
       try {
-        const { data } = await axios.get('/api/auth/profile');
-        if (data.success) {
-          setUserData(data.user);
+        // Get user profile data
+        const userResponse = await axios.get('/api/auth/profile/personal');
+        if (userResponse.data.success) {
+          setUserData(userResponse.data.user);
+        }
+        
+        // Get upcoming appointments data
+        const appointmentsResponse = await axios.get('/api/auth/profile/upcoming');
+        if (appointmentsResponse.data.success) {
+          setAppointments(appointmentsResponse.data.appointments);
         }
       } catch (err) {
-        console.error("Error fetching user data:", err);
+        console.error("Error fetching data:", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchUserData();
+    fetchData();
   }, []);
 
   const formatDate = (dateString) => {
@@ -135,7 +138,7 @@ export default function UpcomingAppointmentsPage() {
                 Upcoming Appointments
               </h2>
               <Link 
-                href="/appointments"
+                href="/appointment"
                 className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-md flex items-center text-sm transition-colors duration-200 hover: cursor-pointer"
               >
                 <Plus size={16} className="mr-2" />
@@ -144,25 +147,44 @@ export default function UpcomingAppointmentsPage() {
             </div>
             
             <div className="space-y-4">
-              {upcomingAppointments.map((appointment) => (
+              {appointments.map((appointment) => (
                 <div key={appointment.id} className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
-                  <div className="border-l-4 border-teal-500">
+                  <div className={`border-l-4 ${appointment.paymentStatus === 'paid' ? 'border-green-500' : 'border-teal-500'}`}>
                     <div className="p-4 flex flex-col md:flex-row md:items-center md:justify-between">
                       <div className="flex items-start space-x-4">
                         <div className="flex-shrink-0 w-14 h-14 bg-teal-50 text-teal-500 flex items-center justify-center rounded-full">
                           <CalendarIcon size={24} />
                         </div>
                         <div>
-                          <p className="text-base font-medium text-gray-900">{appointment.department}</p>
+                          <p className="text-base font-medium text-gray-900">{appointment.doctor.specialty}</p>
                           <div className="flex items-center mt-1 text-sm text-gray-600">
                             <Users size={14} className="mr-1 text-teal-500" />
-                            <span>{appointment.doctor}</span>
+                            <span>Dr.{appointment.doctor.name}</span>
                           </div>
                           <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-600">
                             <div className="flex items-center">
                               <Calendar size={14} className="mr-1 text-teal-500" />
-                              <span>{formatDate(appointment.date)}</span>
+                              <span>{formatDate(appointment.appointmentDate)}</span>
                             </div>
+                          </div>
+                          <div className="mt-2 text-sm">
+                            <span className="text-gray-600">Reason: </span>
+                            <span className="text-gray-800">{appointment.reason}</span>
+                          </div>
+                          <div className="mt-1 flex items-center">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              appointment.paymentStatus === 'paid' 
+                                ? 'bg-green-100 text-green-800' 
+                                : 'bg-yellow-100 text-yellow-800'
+                            }`}>
+                              {appointment.paymentStatus === 'paid' ? 'Paid' : 'Payment Pending'}
+                            </span>
+                            <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              {appointment.appointmentType}
+                            </span>
+                            <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                              {appointment.status}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -171,12 +193,12 @@ export default function UpcomingAppointmentsPage() {
                 </div>
               ))}
               
-              {upcomingAppointments.length === 0 && (
+              {appointments.length === 0 && (
                 <div className="bg-gray-50 rounded-lg border border-gray-200 p-12 flex flex-col items-center justify-center">
                   <Clock size={48} className="text-gray-300 mb-3" />
                   <p className="text-center text-gray-500 mb-2">No upcoming appointments.</p>
                   <Link 
-                    href="/appointments"
+                    href="/appointment"
                     className="mt-4 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-md flex items-center text-sm transition-colors duration-200"
                   >
                     <Plus size={16} className="mr-2" />
@@ -186,7 +208,7 @@ export default function UpcomingAppointmentsPage() {
               )}
             </div>
             
-            {upcomingAppointments.length > 0 && (
+            {appointments.length > 0 && (
               <div className="mt-8 p-4 bg-blue-50 border border-blue-100 rounded-lg flex items-start">
                 <div className="flex-shrink-0 bg-blue-100 rounded-full p-2 mr-4">
                   <FileText size={18} className="text-blue-500" />

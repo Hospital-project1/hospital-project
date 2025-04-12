@@ -25,7 +25,7 @@ export default function PersonalInfoPage() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const { data } = await axios.get('/api/auth/profile');
+        const { data } = await axios.get('/api/auth/profile/personal');
         
         if (data.success) {
           setUserData(data.user);
@@ -63,7 +63,7 @@ export default function PersonalInfoPage() {
 
   const handleSave = async () => {
     try {
-      const { data } = await axios.put('/api/auth/profile', editData);
+      const { data } = await axios.put('/api/auth/profile/personal', editData);
       
       if (data.success) {
         setUserData(data.user);
@@ -266,19 +266,6 @@ export default function PersonalInfoPage() {
                       type="text"
                       name="address"
                       value={editData.address}
-                      onChange={handleInputChange}
-                      className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm p-2"
-                    />
-                  </div>
-                  <div className="md:col-span-2 space-y-2">
-                    <label className="flex items-center text-sm font-medium text-gray-500">
-                      <Camera size={16} className="mr-2 text-teal-500" />
-                      Profile Picture URL
-                    </label>
-                    <input
-                      type="url"
-                      name="profilePicture"
-                      value={editData.profilePicture}
                       onChange={handleInputChange}
                       className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm p-2"
                     />

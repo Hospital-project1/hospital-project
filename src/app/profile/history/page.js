@@ -26,7 +26,7 @@ export default function BookingHistoryPage() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const { data } = await axios.get('/api/auth/profile');
+        const { data } = await axios.get('/api/auth/profile/personal');
         if (data.success) {
           setUserData(data.user);
         }
