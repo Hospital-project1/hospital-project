@@ -2,11 +2,19 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Appointment from '@/app/models/Appointment';
 
+// Helper function to handle params
+async function getParams(request) {
+  const { id } = await request.params;
+  return { id };
+}
+
 // Get single appointment
-export async function GET(request, { params }) {
+export async function GET(request) {
   try {
     await dbConnect();
-    const appointment = await Appointment.findById(params.id)
+    const { id } = await getParams(request);
+    
+    const appointment = await Appointment.findById(id)
       .populate('patient', 'name email phone')
       .populate('doctor', 'name specialization');
       
@@ -21,12 +29,13 @@ export async function GET(request, { params }) {
 }
 
 // Update appointment
-export async function PUT(request, { params }) {
+export async function PUT(request) {
   try {
     await dbConnect();
+    const { id } = await getParams(request);
     const body = await request.json();
     
-    const appointment = await Appointment.findByIdAndUpdate(params.id, body, {
+    const appointment = await Appointment.findByIdAndUpdate(id, body, {
       new: true,
       runValidators: true,
     }).populate('patient doctor');
@@ -42,10 +51,12 @@ export async function PUT(request, { params }) {
 }
 
 // Delete appointment
-export async function DELETE(request, { params }) {
+export async function DELETE(request) {
   try {
     await dbConnect();
-    const deletedAppointment = await Appointment.findByIdAndDelete(params.id);
+    const { id } = await getParams(request);
+    
+    const deletedAppointment = await Appointment.findByIdAndDelete(id);
     
     if (!deletedAppointment) {
       return NextResponse.json({ success: false, error: 'Appointment not found' }, { status: 404 });

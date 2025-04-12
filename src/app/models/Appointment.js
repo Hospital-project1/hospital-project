@@ -12,13 +12,29 @@ const appointmentSchema = new Schema({
     ref: "Doctor",
     required: true,
   },
+  day: { type: String, required: true },
+  timeSlot: { type: String, required: false },
   appointmentDate: { type: Date, required: true },
   status: {
     type: String,
-    enum: ["pending", "confirmed", "canceled"],
+    enum: ["pending", "confirmed", "canceled", "completed"],
     default: "pending",
   },
-  reason: { type: String }, // Patient's reason for the appointment
+  reason: { type: String },
+  appointmentType: {
+    type: String,
+    enum: ["clinic", "video"],
+    default: "clinic"
+  },
+  meetingLink: { type: String },
+  paymentStatus: {
+    type: String,
+    enum: ['pending', 'paid', 'failed', 'refunded'],
+    default: 'pending'
+  },
+  paymentId: String,
+  amount: { type: Number, default: 15 },
+  currency: { type: String, default: "JOD" },
   createdAt: { type: Date, default: Date.now },
 });
 
