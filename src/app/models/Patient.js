@@ -6,10 +6,14 @@ const patientSchema = new Schema({
   medicalHistory: [{ type: String }],
   allergies: [{ type: String }],
   prescriptions: [
-    { type: mongoose.Schema.Types.ObjectId, ref: "Prescription" },
-  ],
+    { type: mongoose.Schema.Types.ObjectId, ref: "Prescription" },],
+    doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor' },
   testReports: [{ type: mongoose.Schema.Types.ObjectId, ref: "MedicalReport" }],
   appointments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Appointment" }],
+  reports: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "MedicalReport"
+  }],
   billingInfo: { type: mongoose.Schema.Types.ObjectId, ref: "Billing" },
 });
 
