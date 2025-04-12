@@ -86,7 +86,7 @@ export async function POST(request) {
     // 5. التحقق من الحقول المطلوبة
     if (!doctor || !appointmentDate || !day || !reason) {
       return NextResponse.json(
-        { success: false, error: "يرجى تعبئة جميع الحقول المطلوبة" },
+        { success: false, error: "Fill all input " },
         { status: 400 }
       );
     }
@@ -112,16 +112,16 @@ export async function POST(request) {
       {
         success: true,
         data: appointment,
-        message: "تم إنشاء الموعد بنجاح",
+        message: "Create appointment done",
       },
       { status: 201 }
     );
   } catch (error) {
-    console.error("خطأ في إنشاء الموعد:", error);
+    console.error("Error to crate appointment :", error);
     return NextResponse.json(
       {
         success: false,
-        error: error.message || "فشل في إنشاء الموعد",
+        error: error.message || "Error to crate appointment :",
       },
       { status: 400 }
     );
