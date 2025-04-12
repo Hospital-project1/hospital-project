@@ -1,26 +1,17 @@
+// app/layout.js (Server Component)
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import ToastProvider from './ToastProvider';
-import { AuthProvider } from '@/app/context/AuthContext'; 
+import ClientLayout from './ClientLayout';
 
 export const metadata = {
   title: "Hospital Management System",
   description: "Hospital appointment management system",
 };
 
-export default function MainLayout({ children }) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <AuthProvider> 
-          <Navbar /> 
-          <main className="flex-grow container mx-auto">
-            {children}
-          </main>
-          <ToastProvider />
-          <Footer />
-        </AuthProvider>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );
