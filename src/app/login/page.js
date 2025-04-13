@@ -33,7 +33,7 @@ export default function LoginPage() {
       if (user.role === "admin") {
       router.push("/admin/dashboard");
       } else if (user.role === "doctor") {
-        router.push("/doctor");
+        router.push("/doctorOverview");
       } else {
         router.push("/");
       }}, 2000);
