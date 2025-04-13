@@ -26,7 +26,7 @@ export async function GET() {
           patientId = userId;
         }
       } catch (err) {
-        console.error("توكن غير صالح أو منتهي:", err);
+        console.error("token in not valid", err);
       }
     }
 
