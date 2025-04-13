@@ -16,9 +16,8 @@ A fully responsive hospital management system for pediatric care built with **Ne
 ### 🛠 Core Technical Features
 - **Next.js 14** with App Router
 - **JWT Authentication** with role-based access
-- **Real-time updates** with WebSockets
-- **Database**: MongoDB with Mongoose (or PostgreSQL with Sequelize)
-- **Payment Integration**: Stripe & PayPal
+- **Database**: MongoDB with Mongoose 
+- **Payment Integration**: PayPal & credit
 - **Responsive Design**: Mobile-first approach
 - **MongoDB**: data-base
 
