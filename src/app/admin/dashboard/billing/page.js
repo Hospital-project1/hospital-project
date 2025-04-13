@@ -12,7 +12,7 @@ export default function BillingPage() {
   useEffect(() => {
     const fetchBilling = async () => {
       try {
-        const res = await axios.get("/api/billing");
+        const res = await axios.get("/api/Billing");
         setBillingData(res.data);
 
         // احسب الإيرادات الشهرية
@@ -21,9 +21,7 @@ export default function BillingPage() {
         res.data.forEach((bill) => {
           if (bill.status === "paid") {
             const date = new Date(bill.createdAt);
-            const month = date.getMonth(); // 0 = Jan
-            monthlyRevenue[month] =
-              (monthlyRevenue[month] || 0) + bill.totalAmount;
+            
           }
         });
 
@@ -42,10 +40,7 @@ export default function BillingPage() {
           "Dec",
         ];
 
-        const formattedRevenue = monthNames.map((name, index) => ({
-          name,
-          revenue: monthlyRevenue[index] || 0,
-        }));
+      
 
         setRevenueData(formattedRevenue);
       } catch (error) {
