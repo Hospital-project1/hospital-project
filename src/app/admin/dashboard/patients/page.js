@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -8,22 +9,54 @@ export default function PatientsPage() {
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 7,
+    totalPages: 1,
+    total: 0
+  });
 
   useEffect(() => {
-    fetchPatients();
-  }, []);
+    fetchPatients(pagination.page, pagination.limit);
+  }, [pagination.page, pagination.limit]);
 
-  const fetchPatients = async () => {
+  const fetchPatients = async (page = 1, limit = 9) => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/patients');
+      const response = await axios.get(`/api/patients?page=${page}&limit=${limit}`);
       setPatients(response.data.data);
+      setPagination({
+        ...pagination,
+        page,
+        limit,
+        totalPages: response.data.pagination.totalPages,
+        total: response.data.pagination.total
+      });
     } catch (err) {
       console.error('Error fetching patients:', err);
       setError(err.message || 'Failed to fetch patients');
     } finally {
       setLoading(false);
     }
+  };
+
+  // Navigate to previous page
+  const handlePreviousPage = () => {
+    if (pagination.page > 1) {
+      fetchPatients(pagination.page - 1, pagination.limit);
+    }
+  };
+
+  // Navigate to next page
+  const handleNextPage = () => {
+    if (pagination.page < pagination.totalPages) {
+      fetchPatients(pagination.page + 1, pagination.limit);
+    }
+  };
+
+  // Navigate to specific page
+  const handlePageChange = (page) => {
+    fetchPatients(page, pagination.limit);
   };
 
   // Format date to be more readable
@@ -38,12 +71,117 @@ export default function PatientsPage() {
       try {
         await axios.delete(`/api/patients/${id}`);
         // Refresh the patients list after deletion
-        fetchPatients();
+        fetchPatients(pagination.page, pagination.limit);
       } catch (err) {
         console.error('Error deleting patient:', err);
         alert('Failed to delete patient');
       }
     }
+  };
+
+  // Generate pagination buttons
+  const renderPaginationButtons = () => {
+    const buttons = [];
+    const maxVisiblePages = 5; // Max number of page buttons to show
+    
+    let startPage = Math.max(1, pagination.page - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(pagination.totalPages, startPage + maxVisiblePages - 1);
+    
+    // Adjust startPage if we're near the end
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+    
+    // Previous button
+    buttons.push(
+      <button
+        key="prev"
+        onClick={handlePreviousPage}
+        disabled={pagination.page === 1}
+        className={`px-3 py-1 rounded-md ${
+          pagination.page === 1 
+            ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
+            : 'bg-gray-700 text-[#DDDFDE] hover:bg-gray-600'
+        }`}
+      >
+        &laquo;
+      </button>
+    );
+    
+    // First page
+    if (startPage > 1) {
+      buttons.push(
+        <button
+          key="1"
+          onClick={() => handlePageChange(1)}
+          className="px-3 py-1 bg-gray-700 text-[#DDDFDE] rounded-md hover:bg-gray-600"
+        >
+          1
+        </button>
+      );
+      
+      // Ellipsis if needed
+      if (startPage > 2) {
+        buttons.push(
+          <span key="ellipsis1" className="px-3 py-1 text-[#DDDFDE]">...</span>
+        );
+      }
+    }
+    
+    // Page number buttons
+    for (let i = startPage; i <= endPage; i++) {
+      buttons.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          className={`px-3 py-1 rounded-md ${
+            pagination.page === i 
+              ? 'bg-[#0CB8B6] text-white' 
+              : 'bg-gray-700 text-[#DDDFDE] hover:bg-gray-600'
+          }`}
+        >
+          {i}
+        </button>
+      );
+    }
+    
+    // Ellipsis if needed
+    if (endPage < pagination.totalPages - 1) {
+      buttons.push(
+        <span key="ellipsis2" className="px-3 py-1 text-[#DDDFDE]">...</span>
+      );
+    }
+    
+    // Last page
+    if (endPage < pagination.totalPages) {
+      buttons.push(
+        <button
+          key={pagination.totalPages}
+          onClick={() => handlePageChange(pagination.totalPages)}
+          className="px-3 py-1 bg-gray-700 text-[#DDDFDE] rounded-md hover:bg-gray-600"
+        >
+          {pagination.totalPages}
+        </button>
+      );
+    }
+    
+    // Next button
+    buttons.push(
+      <button
+        key="next"
+        onClick={handleNextPage}
+        disabled={pagination.page === pagination.totalPages}
+        className={`px-3 py-1 rounded-md ${
+          pagination.page === pagination.totalPages 
+            ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
+            : 'bg-gray-700 text-[#DDDFDE] hover:bg-gray-600'
+        }`}
+      >
+        &raquo;
+      </button>
+    );
+    
+    return buttons;
   };
 
   return (
@@ -66,45 +204,57 @@ export default function PatientsPage() {
         ) : patients.length === 0 ? (
           <p className="text-[#DDDFDE]">No patients found</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-600">
-              <thead>
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-[#DDDFDE] uppercase tracking-wider">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-[#DDDFDE] uppercase tracking-wider">Email</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-[#DDDFDE] uppercase tracking-wider">Phone</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-[#DDDFDE] uppercase tracking-wider">Address</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-[#DDDFDE] uppercase tracking-wider">Created</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-[#DDDFDE] uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-600">
-                {patients.map((patient) => (
-                  <tr key={patient._id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE]">{patient.name}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE]">{patient.email}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE]">{patient.phone || '-'}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE]">{patient.address || '-'}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE]">{formatDate(patient.createdAt)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE] space-x-2">
-                      <button
-                        onClick={() => handleDelete(patient._id)}
-                        className="text-red-500 hover:underline cursor-pointer"
-                      >
-                        Delete
-                      </button>
-                      <Link
-                        href={`/admin/dashboard/patients/${patient._id}/edit`}
-                        className="text-yellow-500 hover:underline"
-                      >
-                        Edit
-                      </Link>
-                    </td>
+          <>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-600">
+                <thead>
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#DDDFDE] uppercase tracking-wider">Name</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#DDDFDE] uppercase tracking-wider">Email</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#DDDFDE] uppercase tracking-wider">Phone</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#DDDFDE] uppercase tracking-wider">Address</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#DDDFDE] uppercase tracking-wider">Created</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#DDDFDE] uppercase tracking-wider">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-gray-600">
+                  {patients.map((patient) => (
+                    <tr key={patient._id}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE]">{patient.name}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE]">{patient.email}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE]">{patient.phone || '-'}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE]">{patient.address || '-'}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE]">{formatDate(patient.createdAt)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE] space-x-2">
+                        <button
+                          onClick={() => handleDelete(patient._id)}
+                          className="text-red-500 hover:underline cursor-pointer"
+                        >
+                          Delete
+                        </button>
+                        <Link
+                          href={`/admin/dashboard/patients/${patient._id}/edit`}
+                          className="text-yellow-500 hover:underline"
+                        >
+                          Edit
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            
+            {/* Pagination controls */}
+            <div className="mt-6 flex flex-col md:flex-row justify-between items-center">
+              <div className="text-sm text-[#DDDFDE] mb-4 md:mb-0">
+                Showing page {pagination.page} of {pagination.totalPages} (Total records: {pagination.total})
+              </div>
+              <div className="flex space-x-2">
+                {renderPaginationButtons()}
+              </div>
+            </div>
+          </>
         )}
       </div>
     </div>
