@@ -14,7 +14,7 @@ export const metadata = {
 
 export default function DashboardLayout({ children }) {
   return (
-    <div className="flex h-screen bg-[#1D1F27] text-[#DDDFDE]">
+    <div className="flex h-screen bg-[#ffffff] text-[#DDDFDE]">
       <DashboardSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* <DashboardHeader /> */}

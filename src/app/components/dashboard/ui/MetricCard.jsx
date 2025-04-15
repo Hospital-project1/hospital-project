@@ -18,11 +18,11 @@ export default function DashboardMetricCard({
   const IconComponent = iconComponents[icon] || Users;
 
   return (
-    <div className="bg-[#DDDFDE]/10 rounded-lg p-4 border border-[#DDDFDE]/5">
+    <div className="bg-[#000000]/10 rounded-lg p-4 border border-[#000000]/5">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm font-medium text-[#DDDFDE]/70">{title}</p>
-          <h3 className="text-2xl font-bold mt-1 text-[#DDDFDE]">{value}</h3>
+          <p className="text-sm font-medium text-[#000000]/70">{title}</p>
+          <h3 className="text-2xl font-bold mt-1 text-[#000000]">{value}</h3>
         </div>
         <div
           className="p-2 rounded-md"
