@@ -1,27 +1,53 @@
 
+
 // app/api/patients/route.js
 import { NextResponse } from "next/server";
 import connect from "../../../lib/dbConnect";
 import Patient from "../../models/User";
 
-// GET - Get all patients (non-deleted ones)
-export async function GET() {
+// GET - Get all patients (non-deleted ones) with pagination
+export async function GET(request) {
   try {
     // Connect to database
     await connect();
     
-    // Find all non-deleted patients with role 'patient'
+    // Get URL parameters for pagination
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get('page')) || 1;
+    const limit = parseInt(searchParams.get('limit')) || 9; // Default to 7 items per page
+    const skip = (page - 1) * limit;
+    
+    // Find all non-deleted patients with role 'patient' with pagination
     const patients = await Patient.find({ 
       role: 'patient',
       isDeleted: false 
-    }).select('-password').sort({ createdAt: -1 });
+    })
+    .select('-password')
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
     
-    // Return the patients
+    // Count total documents for pagination metadata
+    const total = await Patient.countDocuments({
+      role: 'patient',
+      isDeleted: false
+    });
+    
+    // Calculate total pages
+    const totalPages = Math.ceil(total / limit);
+    
+    // Return the patients with pagination metadata
     return NextResponse.json(
       { 
         success: true, 
         count: patients.length,
-        data: patients 
+        data: patients,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages
+        }
       },
       { status: 200 }
     );
