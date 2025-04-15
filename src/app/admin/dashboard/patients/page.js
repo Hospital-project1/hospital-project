@@ -186,7 +186,7 @@ export default function PatientsPage() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
+      {/* <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-[#DDDFDE]">Patient Records</h1>
         <Link 
           href="/admin/dashboard/patients/add" 
@@ -194,8 +194,26 @@ export default function PatientsPage() {
         >
           Add New Patient
         </Link>
-      </div>
+      </div> */}
       
+      <div className="bg-[#1D1F27] rounded-lg shadow-lg p-6 mb-6 border border-[#DDDFDE]/10">
+  <div className="flex justify-between items-center">
+    <div>
+      <h1 className="text-2xl font-bold text-white">Patient Records</h1>
+      <p className="text-[#DDDFDE]/70 mt-1">Manage your clinic's patient information</p>
+    </div>
+    <Link
+      href="/admin/dashboard/patients/add"
+      className="bg-[#0CB8B6] hover:bg-[#0CB8B6]/90 text-white px-4 py-2 rounded-md transition flex items-center"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+      </svg>
+      Add New Patient
+    </Link>
+  </div>
+</div>
+
       <div className="bg-[#DDDFDE]/10 rounded-lg p-6">
         {loading ? (
           <p className="text-[#DDDFDE]">Loading patients...</p>
