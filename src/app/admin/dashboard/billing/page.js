@@ -1,56 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import axios from "axios";
 import MetricCard from "../../../components/dashboard/ui/MetricCard";
 import RevenueChart from "../../../components/dashboard/charts/RevenueChart";
 
 export default function BillingPage() {
-  const [billingData, setBillingData] = useState([]);
-  const [revenueData, setRevenueData] = useState([]);
+  // Static billing data
+  const billingData = [
+    {
+      id: 1,
+      totalAmount: 300,
+      status: "paid",
+      paymentMethod: "Credit Card",
+      createdAt: "2025-01-15T00:00:00Z",
+    },
+    {
+      id: 2,
+      totalAmount: 300,
+      status: "pending",
+      paymentMethod: "Paypal",
+      createdAt: "2025-02-20T00:00:00Z",
+    },
+    {
+      id: 3,
+      totalAmount: 290,
+      status: "paid",
+      paymentMethod: "Paypal",
+      createdAt: "2025-03-10T00:00:00Z",
+    },
+  ];
 
-  useEffect(() => {
-    const fetchBilling = async () => {
-      try {
-        const res = await axios.get("/api/Billing");
-        setBillingData(res.data);
-
-        // احسب الإيرادات الشهرية
-        const monthlyRevenue = {};
-
-        res.data.forEach((bill) => {
-          if (bill.status === "paid") {
-            const date = new Date(bill.createdAt);
-            
-          }
-        });
-
-        const monthNames = [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ];
-
-      
-
-        setRevenueData(formattedRevenue);
-      } catch (error) {
-        console.error("Error fetching billing data:", error);
-      }
-    };
-
-    fetchBilling();
-  }, []);
-
+  // Manually calculate totals
   const totalRevenue = billingData
     .filter((b) => b.status === "paid")
     .reduce((acc, curr) => acc + curr.totalAmount, 0);
@@ -63,6 +42,15 @@ export default function BillingPage() {
     acc[bill.paymentMethod] = (acc[bill.paymentMethod] || 0) + 1;
     return acc;
   }, {});
+
+  // Static revenue chart data
+  const revenueData = [
+    { month: "Jan", revenue: 120 },
+    { month: "Feb", revenue: 0 },
+    { month: "Mar", revenue: 150 },
+    { month: "Apr", revenue: 0 },
+    { month: "May", revenue: 0 },
+  ];
 
   return (
     <div className="p-4 space-y-6">
