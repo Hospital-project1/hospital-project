@@ -37,5 +37,5 @@ const appointmentSchema = new Schema({
   currency: { type: String, default: "JOD" },
   createdAt: { type: Date, default: Date.now },
 });
-
-module.exports = mongoose.model("Appointment", appointmentSchema);
+const Appointment = mongoose.models.Appointment || mongoose.model("Appointment", appointmentSchema);
+export default Appointment;
