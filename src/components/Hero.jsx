@@ -70,7 +70,7 @@ const HeroSection = () => {
           </div>
           
           <Link 
-            href="/"
+            href="/appointment"
             className="bg-[#CE592C] hover:bg-[#CE592C]/90 text-white font-bold py-3 px-8 rounded-md inline-block transition-all"
           >
             Book an Appointment

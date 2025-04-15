@@ -5,7 +5,19 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import axios from 'axios';
-import { User, Calendar, Clock, FileText, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { 
+  User, 
+  Calendar, 
+  Clock, 
+  FileText, 
+  Search, 
+  ChevronLeft, 
+  ChevronRight, 
+  CheckCircle,
+  Stethoscope,
+  Video,
+  AlertCircle
+} from 'lucide-react';
 
 export default function BookingHistoryPage() {
   const pathname = usePathname();
@@ -15,33 +27,70 @@ export default function BookingHistoryPage() {
     email: '',
     profilePicture: ''
   });
+  const [bookingHistory, setBookingHistory] = useState([]);
   const [loading, setLoading] = useState(true);
-  
-  const bookingHistory = [
-    { id: "BK001", date: "2025-03-10", department: "Cardiology", doctor: "Dr. Smith", status: "Completed" },
-    { id: "BK002", date: "2025-02-15", department: "Orthopedics", doctor: "Dr. Johnson", status: "Completed" },
-    { id: "BK003", date: "2025-01-20", department: "Neurology", doctor: "Dr. Williams", status: "Cancelled" }
-  ];
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
+  const resultsPerPage = 10;
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchData = async () => {
       try {
-        const { data } = await axios.get('/api/auth/profile');
-        if (data.success) {
-          setUserData(data.user);
+        // Get user profile data
+        const userResponse = await axios.get('/api/auth/profile/personal');
+        if (userResponse.data.success) {
+          setUserData(userResponse.data.user);
+        }
+        
+        // Get appointment history data
+        const historyResponse = await axios.get('/api/auth/profile/history');
+        if (historyResponse.data.success) {
+          // Filter only completed appointments
+          const completedAppointments = historyResponse.data.appointments.filter(
+            appointment => appointment.status === 'completed'
+          );
+          setBookingHistory(completedAppointments);
+          setTotalResults(completedAppointments.length);
         }
       } catch (err) {
-        console.error("Error fetching user data:", err);
+        console.error("Error fetching data:", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchUserData();
+    fetchData();
   }, []);
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-US', options);
+  };
+
+  // Calculate pagination values
+  const startIndex = (currentPage - 1) * resultsPerPage;
+  const endIndex = Math.min(startIndex + resultsPerPage, totalResults);
+  const totalPages = Math.ceil(totalResults / resultsPerPage);
+  
+  // Handle page changes
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  // Get current page items
+  const currentItems = bookingHistory.slice(startIndex, endIndex);
+  
+  // Helper function to get appointment type icon
+  const getAppointmentTypeIcon = (type) => {
+    switch(type.toLowerCase()) {
+      case 'video':
+        return <Video size={16} className="text-blue-500" />;
+      case 'in-person':
+        return <Stethoscope size={16} className="text-purple-500" />;
+      default:
+        return <Calendar size={16} className="text-gray-500" />;
+    }
   };
 
   if (loading) {
@@ -133,40 +182,63 @@ export default function BookingHistoryPage() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
               <h2 className="text-lg font-medium text-gray-900 flex items-center">
                 <FileText size={20} className="mr-2 text-teal-500" />
-                Booking History
+                Completed Appointments History
               </h2>
             </div>
             
-            <div className="bg-gray-50 rounded-lg border border-gray-100 overflow-hidden">
+            <div className="bg-gray-50 rounded-lg border border-gray-100 overflow-hidden shadow">
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead>
-                    <tr className="bg-teal-50">
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-teal-700 uppercase tracking-wider">Booking ID</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-teal-700 uppercase tracking-wider">Date</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-teal-700 uppercase tracking-wider">Department</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-teal-700 uppercase tracking-wider">Doctor</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-teal-700 uppercase tracking-wider">Status</th>
+                    <tr className="bg-gradient-to-r from-teal-50 to-teal-100">
+                      <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-teal-700 uppercase tracking-wider">Booking ID</th>
+                      <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-teal-700 uppercase tracking-wider">Date</th>
+                      <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-teal-700 uppercase tracking-wider">Specialty</th>
+                      <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-teal-700 uppercase tracking-wider">Doctor</th>
+                      <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-teal-700 uppercase tracking-wider">Type</th>
+                      <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-teal-700 uppercase tracking-wider">Status</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {bookingHistory.map((booking) => (
-                      <tr key={booking.id} className="hover:bg-gray-50 transition-colors">
+                    {currentItems.map((booking, index) => (
+                      <tr 
+                        key={booking.id} 
+                        className={`hover:bg-teal-50 transition-colors cursor-pointer ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
+                      >
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="text-sm font-medium text-teal-600">{booking.id}</span>
+                          <span className="text-sm font-medium text-teal-600">{booking.id.substring(0, 8)}</span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <Calendar size={14} className="text-gray-400 mr-2" />
-                            <span className="text-sm text-gray-700">{formatDate(booking.date)}</span>
+                            <Calendar size={16} className="text-teal-400 mr-2" />
+                            <span className="text-sm text-gray-700">{formatDate(booking.appointmentDate)}</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{booking.department}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{booking.doctor}</td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                            ${booking.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                            {booking.status}
+                          <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-teal-50 text-teal-700 border border-teal-100">
+                            {booking.doctor.specialty}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-8 w-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 font-medium text-sm">
+                              {booking.doctor.name.split(' ').map(n => n[0]).join('')}
+                            </div>
+                            <div className="ml-3">
+                              <p className="text-sm font-medium text-gray-900">Dr. {booking.doctor.name}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            {getAppointmentTypeIcon(booking.appointmentType)}
+                            <span className="ml-2 text-sm text-gray-700">{booking.appointmentType}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="px-3 py-1.5 inline-flex items-center text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            <CheckCircle size={14} className="mr-1" />
+                            Completed
                           </span>
                         </td>
                       </tr>
@@ -176,47 +248,67 @@ export default function BookingHistoryPage() {
               </div>
               
               {bookingHistory.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-12">
-                  <Calendar size={48} className="text-gray-300 mb-3" />
-                  <p className="text-center text-gray-500">No booking history available.</p>
+                <div className="flex flex-col items-center justify-center py-16">
+                  <Calendar size={64} className="text-gray-300 mb-4" />
+                  <p className="text-lg font-medium text-gray-500 mb-2">No completed appointments</p>
+                  <p className="text-center text-gray-400 text-sm max-w-md">
+                    You don't have any completed appointments in your history yet.
+                  </p>
                 </div>
               )}
               
               {/* Pagination */}
-              <div className="bg-gray-50 px-4 py-3 border-t border-gray-200 sm:px-6">
-                <div className="flex items-center justify-between">
-                  <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                    <div>
-                      <p className="text-sm text-gray-700">
-                        Showing <span className="font-medium">1</span> to <span className="font-medium">3</span> of{' '}
-                        <span className="font-medium">3</span> results
-                      </p>
-                    </div>
-                    <div>
-                      <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                        <a
-                          href="#"
-                          className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                        >
-                          <ChevronLeft size={16} className="h-5 w-5" aria-hidden="true" />
-                        </a>
-                        <a
-                          href="#"
-                          className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-teal-50 text-sm font-medium text-teal-600 hover:bg-teal-100"
-                        >
-                          1
-                        </a>
-                        <a
-                          href="#"
-                          className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                        >
-                          <ChevronRight size={16} className="h-5 w-5" aria-hidden="true" />
-                        </a>
-                      </nav>
+              {bookingHistory.length > 0 && (
+                <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 sm:px-6">
+                  <div className="flex items-center justify-between">
+                    <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                      <div>
+                        <p className="text-sm text-gray-700">
+                          Showing <span className="font-medium">{startIndex + 1}</span> to <span className="font-medium">{endIndex}</span> of{' '}
+                          <span className="font-medium">{totalResults}</span> results
+                        </p>
+                      </div>
+                      <div>
+                        <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                          <button
+                            onClick={() => goToPage(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            className={`relative inline-flex items-center px-3 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium ${
+                              currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-teal-50 hover:text-teal-600 cursor-pointer'
+                            }`}
+                          >
+                            <ChevronLeft size={16} className="h-5 w-5" aria-hidden="true" />
+                          </button>
+                          
+                          {[...Array(totalPages)].map((_, i) => (
+                            <button
+                              key={i}
+                              onClick={() => goToPage(i + 1)}
+                              className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                                currentPage === i + 1
+                                  ? 'z-10 bg-teal-50 border-teal-500 text-teal-600'
+                                  : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                              }`}
+                            >
+                              {i + 1}
+                            </button>
+                          ))}
+                          
+                          <button
+                            onClick={() => goToPage(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                            className={`relative inline-flex items-center px-3 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium ${
+                              currentPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-teal-50 hover:text-teal-600 cursor-pointer'
+                            }`}
+                          >
+                            <ChevronRight size={16} className="h-5 w-5" aria-hidden="true" />
+                          </button>
+                        </nav>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
