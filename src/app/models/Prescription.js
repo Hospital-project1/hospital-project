@@ -15,5 +15,6 @@ const prescriptionSchema = new Schema({
   medication: [{ name: String, dosage: String, instructions: String }],
   issuedDate: { type: Date, default: Date.now },
 });
+const Prescription = mongoose.models.Prescription || mongoose.model("Prescription", prescriptionSchema);
+export default Prescription;
 
-module.exports = mongoose.model("Prescription", prescriptionSchema);

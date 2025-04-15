@@ -19,5 +19,5 @@ const doctorSchema = new Schema({
   patients: [{ type: mongoose.Schema.Types.ObjectId, ref: "Patient" }],
   details: { type: String, default:"" },
 });
-
-module.exports = mongoose.model("Doctor", doctorSchema);
+const Doctor = mongoose.models.Doctor || mongoose.model("Doctor", doctorSchema);
+export default Doctor;

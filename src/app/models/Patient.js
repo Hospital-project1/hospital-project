@@ -17,4 +17,6 @@ const patientSchema = new Schema({
   billingInfo: { type: mongoose.Schema.Types.ObjectId, ref: "Billing" },
 });
 
-module.exports = mongoose.model("Patient", patientSchema);
+const Patient= mongoose.models.Patient || mongoose.model("Patient", patientSchema);
+export default Patient;
+
