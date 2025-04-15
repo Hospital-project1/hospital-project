@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -133,13 +131,13 @@ export default function DoctorsDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1D1F27] text-white px-4 py-6">
+    <div className="min-h-screen bg-white text-black px-4 py-6">
       <div className="container mx-auto">
-        <div className="bg-[#1D1F27] rounded-lg shadow-lg p-6 mb-6 border border-[#DDDFDE]/10">
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6 border border-gray-200">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-white">Doctor Management</h1>
-              <p className="text-[#DDDFDE]/70 mt-1">Manage your clinic's medical staff</p>
+              <h1 className="text-2xl font-bold text-black">Doctor Management</h1>
+              <p className="text-gray-600 mt-1">Manage your clinic's medical staff</p>
             </div>
             <button
               onClick={handleAddDoctor}
@@ -155,20 +153,20 @@ export default function DoctorsDashboard() {
 
         {/* View toggle controls */}
         <div className="flex justify-between items-center mb-4">
-          <div className="text-white font-medium">
+          <div className="text-black font-medium">
             {pagination.totalDocs > 0 && !loading ? (
               <span>{pagination.totalDocs} doctors found</span>
             ) : (
               <span>&nbsp;</span>
             )}
           </div>
-          <div className="bg-[#1D1F27] rounded-lg shadow-lg border border-[#DDDFDE]/10 p-1 flex">
+          <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-1 flex">
             <button
               onClick={() => toggleViewMode('card')}
               className={`px-3 py-1.5 rounded ${
                 viewMode === 'card'
                   ? 'bg-[#0CB8B6] text-white'
-                  : 'text-[#DDDFDE] hover:bg-[#DDDFDE]/10'
+                  : 'text-gray-700 hover:bg-gray-100'
               } transition-colors flex items-center`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -181,7 +179,7 @@ export default function DoctorsDashboard() {
               className={`px-3 py-1.5 rounded ${
                 viewMode === 'slot'
                   ? 'bg-[#0CB8B6] text-white'
-                  : 'text-[#DDDFDE] hover:bg-[#DDDFDE]/10'
+                  : 'text-gray-700 hover:bg-gray-100'
               } transition-colors flex items-center`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -193,17 +191,17 @@ export default function DoctorsDashboard() {
         </div>
 
         {loading ? (
-          <div className="flex justify-center items-center py-12 bg-[#1D1F27]/50 rounded-lg shadow-lg border border-[#DDDFDE]/10">
+          <div className="flex justify-center items-center py-12 bg-gray-50 rounded-lg shadow-lg border border-gray-200">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#0CB8B6]"></div>
           </div>
         ) : (
           <>
             {doctors.length === 0 ? (
-              <div className="text-center py-12 bg-[#1D1F27]/50 rounded-lg shadow-lg border border-[#DDDFDE]/10">
+              <div className="text-center py-12 bg-gray-50 rounded-lg shadow-lg border border-gray-200">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-[#CE592C]/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z" />
                 </svg>
-                <p className="text-white mt-4">No doctors available yet</p>
+                <p className="text-black mt-4">No doctors available yet</p>
                 <button
                   onClick={handleAddDoctor}
                   className="mt-4 bg-[#0CB8B6]/10 text-[#0CB8B6] px-4 py-2 rounded-md hover:bg-[#0CB8B6]/20 transition"
@@ -212,7 +210,7 @@ export default function DoctorsDashboard() {
                 </button>
               </div>
             ) : (
-              <div className="bg-[#1D1F27]/50 rounded-lg p-6 border border-[#DDDFDE]/10 shadow-lg">
+              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 shadow-lg">
                 {viewMode === 'card' ? (
                   // Card View
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -227,13 +225,13 @@ export default function DoctorsDashboard() {
                   </div>
                 ) : (
                   // Slot View
-                  <div className="border border-[#DDDFDE]/10 rounded-lg overflow-hidden">
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
                     {doctors.map((doctor, index) => (
                       <div 
                         key={doctor._id} 
                         className={`flex flex-wrap md:flex-nowrap items-center p-4 ${
-                          index % 2 === 0 ? 'bg-[#1D1F27]' : 'bg-[#1D1F27]/80'
-                        } ${index !== doctors.length - 1 ? 'border-b border-[#DDDFDE]/10' : ''}`}
+                          index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                        } ${index !== doctors.length - 1 ? 'border-b border-gray-200' : ''}`}
                       >
                         {/* Doctor Avatar */}
                         <div className="w-12 h-12 relative rounded-full overflow-hidden border-2 border-[#0CB8B6] mr-4 mb-2 md:mb-0">
@@ -244,7 +242,7 @@ export default function DoctorsDashboard() {
                               className="object-cover w-full h-full"
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-[#DDDFDE] text-[#1D1F27] font-bold">
+                            <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-700 font-bold">
                               {doctor.user.name?.charAt(0)}
                             </div>
                           )}
@@ -252,8 +250,8 @@ export default function DoctorsDashboard() {
                         
                         {/* Doctor Name & Specialty */}
                         <div className="w-full md:w-1/4 mb-2 md:mb-0">
-                          <h3 className="font-bold text-white">{doctor.user.name}</h3>
-                          <p className="text-sm text-[#DDDFDE]/70">{doctor.specialty}</p>
+                          <h3 className="font-bold text-black">{doctor.user.name}</h3>
+                          <p className="text-sm text-gray-600">{doctor.specialty}</p>
                         </div>
                         
                         {/* Contact Info */}
@@ -262,14 +260,14 @@ export default function DoctorsDashboard() {
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[#CE592C] mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
-                            <span className="text-[#DDDFDE] truncate">{doctor.user.email}</span>
+                            <span className="text-gray-700 truncate">{doctor.user.email}</span>
                           </div>
                           {doctor.user.phone && (
                             <div className="flex items-center text-sm">
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[#CE592C] mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                               </svg>
-                              <span className="text-[#DDDFDE]">{doctor.user.phone}</span>
+                              <span className="text-gray-700">{doctor.user.phone}</span>
                             </div>
                           )}
                         </div>
@@ -277,8 +275,8 @@ export default function DoctorsDashboard() {
                         {/* Availability */}
                         {doctor.availability && doctor.availability.length > 0 && (
                           <div className="w-full md:w-1/4 mb-2 md:mb-0 md:px-4">
-                            <h4 className="text-xs font-medium text-white mb-1">Working Hours:</h4>
-                            <div className="text-xs text-[#DDDFDE]/70">
+                            <h4 className="text-xs font-medium text-black mb-1">Working Hours:</h4>
+                            <div className="text-xs text-gray-600">
                               {doctor.availability.slice(0, 1).map((slot, index) => (
                                 <div key={index} className="flex justify-between mb-1">
                                   <span>{slot.day}:</span>
@@ -321,15 +319,15 @@ export default function DoctorsDashboard() {
                 {/* Pagination Controls */}
                 {pagination.totalPages > 1 && (
                   <div className="mt-6 flex justify-center">
-                    <div className="flex items-center space-x-2 bg-[#1D1F27] rounded-lg p-2 border border-[#DDDFDE]/10">
+                    <div className="flex items-center space-x-2 bg-white rounded-lg p-2 border border-gray-200">
                       {/* Previous Page Button */}
                       <button
                         onClick={() => handlePageChange(pagination.page - 1)}
                         disabled={!pagination.hasPrevPage}
                         className={`px-3 py-1 rounded text-sm ${
                           pagination.hasPrevPage
-                            ? 'bg-[#DDDFDE]/10 text-white hover:bg-[#DDDFDE]/20'
-                            : 'text-[#DDDFDE]/40 cursor-not-allowed'
+                            ? 'bg-gray-100 text-black hover:bg-gray-200'
+                            : 'text-gray-400 cursor-not-allowed'
                         }`}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -353,7 +351,7 @@ export default function DoctorsDashboard() {
                               className={`px-3 py-1 rounded text-sm ${
                                 pagination.page === pageNum
                                   ? 'bg-[#0CB8B6] text-white'
-                                  : 'bg-[#DDDFDE]/10 text-white hover:bg-[#DDDFDE]/20'
+                                  : 'bg-gray-100 text-black hover:bg-gray-200'
                               }`}
                             >
                               {pageNum}
@@ -367,7 +365,7 @@ export default function DoctorsDashboard() {
                           (pageNum === pagination.totalPages - 1 && pagination.page < pagination.totalPages - 2)
                         ) {
                           return (
-                            <span key={pageNum} className="text-[#DDDFDE]/40 px-2">
+                            <span key={pageNum} className="text-gray-400 px-2">
                               ...
                             </span>
                           );
@@ -382,8 +380,8 @@ export default function DoctorsDashboard() {
                         disabled={!pagination.hasNextPage}
                         className={`px-3 py-1 rounded text-sm ${
                           pagination.hasNextPage
-                            ? 'bg-[#DDDFDE]/10 text-white hover:bg-[#DDDFDE]/20'
-                            : 'text-[#DDDFDE]/40 cursor-not-allowed'
+                            ? 'bg-gray-100 text-black hover:bg-gray-200'
+                            : 'text-gray-400 cursor-not-allowed'
                         }`}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

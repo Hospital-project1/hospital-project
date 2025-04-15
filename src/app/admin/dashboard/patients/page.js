@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -100,8 +99,8 @@ export default function PatientsPage() {
         disabled={pagination.page === 1}
         className={`px-3 py-1 rounded-md ${
           pagination.page === 1 
-            ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
-            : 'bg-gray-700 text-[#DDDFDE] hover:bg-gray-600'
+            ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
         }`}
       >
         &laquo;
@@ -114,7 +113,7 @@ export default function PatientsPage() {
         <button
           key="1"
           onClick={() => handlePageChange(1)}
-          className="px-3 py-1 bg-gray-700 text-[#DDDFDE] rounded-md hover:bg-gray-600"
+          className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
         >
           1
         </button>
@@ -123,7 +122,7 @@ export default function PatientsPage() {
       // Ellipsis if needed
       if (startPage > 2) {
         buttons.push(
-          <span key="ellipsis1" className="px-3 py-1 text-[#DDDFDE]">...</span>
+          <span key="ellipsis1" className="px-3 py-1 text-gray-700">...</span>
         );
       }
     }
@@ -137,7 +136,7 @@ export default function PatientsPage() {
           className={`px-3 py-1 rounded-md ${
             pagination.page === i 
               ? 'bg-[#0CB8B6] text-white' 
-              : 'bg-gray-700 text-[#DDDFDE] hover:bg-gray-600'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >
           {i}
@@ -148,7 +147,7 @@ export default function PatientsPage() {
     // Ellipsis if needed
     if (endPage < pagination.totalPages - 1) {
       buttons.push(
-        <span key="ellipsis2" className="px-3 py-1 text-[#DDDFDE]">...</span>
+        <span key="ellipsis2" className="px-3 py-1 text-gray-700">...</span>
       );
     }
     
@@ -158,7 +157,7 @@ export default function PatientsPage() {
         <button
           key={pagination.totalPages}
           onClick={() => handlePageChange(pagination.totalPages)}
-          className="px-3 py-1 bg-gray-700 text-[#DDDFDE] rounded-md hover:bg-gray-600"
+          className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
         >
           {pagination.totalPages}
         </button>
@@ -173,8 +172,8 @@ export default function PatientsPage() {
         disabled={pagination.page === pagination.totalPages}
         className={`px-3 py-1 rounded-md ${
           pagination.page === pagination.totalPages 
-            ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
-            : 'bg-gray-700 text-[#DDDFDE] hover:bg-gray-600'
+            ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
         }`}
       >
         &raquo;
@@ -186,64 +185,54 @@ export default function PatientsPage() {
 
   return (
     <div>
-      {/* <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-[#DDDFDE]">Patient Records</h1>
-        <Link 
-          href="/admin/dashboard/patients/add" 
-          className="px-4 py-2 bg-[#0CB8B6] text-white rounded-md hover:bg-[#0CB8B6]/90 transition-colors"
-        >
-          Add New Patient
-        </Link>
-      </div> */}
-      
-      <div className="bg-[#1D1F27] rounded-lg shadow-lg p-6 mb-6 border border-[#DDDFDE]/10">
-  <div className="flex justify-between items-center">
-    <div>
-      <h1 className="text-2xl font-bold text-white">Patient Records</h1>
-      <p className="text-[#DDDFDE]/70 mt-1">Manage your clinic's patient information</p>
-    </div>
-    <Link
-      href="/admin/dashboard/patients/add"
-      className="bg-[#0CB8B6] hover:bg-[#0CB8B6]/90 text-white px-4 py-2 rounded-md transition flex items-center"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-      </svg>
-      Add New Patient
-    </Link>
-  </div>
-</div>
+      <div className="bg-white rounded-lg shadow-lg p-6 mb-6 border border-gray-200">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold text-black">Patient Records</h1>
+            <p className="text-gray-600 mt-1">Manage your clinic's patient information</p>
+          </div>
+          <Link
+            href="/admin/dashboard/patients/add"
+            className="bg-[#0CB8B6] hover:bg-[#0CB8B6]/90 text-white px-4 py-2 rounded-md transition flex items-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add New Patient
+          </Link>
+        </div>
+      </div>
 
-      <div className="bg-[#DDDFDE]/10 rounded-lg p-6">
+      <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-lg">
         {loading ? (
-          <p className="text-[#DDDFDE]">Loading patients...</p>
+          <p className="text-gray-700">Loading patients...</p>
         ) : error ? (
           <p className="text-red-500">Error: {error}</p>
         ) : patients.length === 0 ? (
-          <p className="text-[#DDDFDE]">No patients found</p>
+          <p className="text-gray-700">No patients found</p>
         ) : (
           <>
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-600">
-                <thead>
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[#DDDFDE] uppercase tracking-wider">Name</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[#DDDFDE] uppercase tracking-wider">Email</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[#DDDFDE] uppercase tracking-wider">Phone</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[#DDDFDE] uppercase tracking-wider">Address</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[#DDDFDE] uppercase tracking-wider">Created</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[#DDDFDE] uppercase tracking-wider">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Name</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Email</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Phone</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Address</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Created</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-600">
+                <tbody className="bg-white divide-y divide-gray-200">
                   {patients.map((patient) => (
-                    <tr key={patient._id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE]">{patient.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE]">{patient.email}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE]">{patient.phone || '-'}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE]">{patient.address || '-'}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE]">{formatDate(patient.createdAt)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[#DDDFDE] space-x-2">
+                    <tr key={patient._id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{patient.name}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{patient.email}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{patient.phone || '-'}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{patient.address || '-'}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{formatDate(patient.createdAt)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                         <button
                           onClick={() => handleDelete(patient._id)}
                           className="text-red-500 hover:underline cursor-pointer"
@@ -252,7 +241,7 @@ export default function PatientsPage() {
                         </button>
                         <Link
                           href={`/admin/dashboard/patients/${patient._id}/edit`}
-                          className="text-yellow-500 hover:underline"
+                          className="text-yellow-600 hover:underline"
                         >
                           Edit
                         </Link>
@@ -265,7 +254,7 @@ export default function PatientsPage() {
             
             {/* Pagination controls */}
             <div className="mt-6 flex flex-col md:flex-row justify-between items-center">
-              <div className="text-sm text-[#DDDFDE] mb-4 md:mb-0">
+              <div className="text-sm text-gray-700 mb-4 md:mb-0">
                 Showing page {pagination.page} of {pagination.totalPages} (Total records: {pagination.total})
               </div>
               <div className="flex space-x-2">

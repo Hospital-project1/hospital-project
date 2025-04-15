@@ -53,8 +53,8 @@ export default function BillingPage() {
   ];
 
   return (
-    <div className="p-4 space-y-6">
-      <h1 className="text-2xl font-bold">Billing Overview</h1>
+    <div className="p-4 space-y-6 bg-gray-50 text-gray-800">
+      <h1 className="text-2xl font-bold text-gray-800">Billing Overview</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <MetricCard title="Total Revenue" value={`JD ${totalRevenue}`} />
@@ -62,16 +62,21 @@ export default function BillingPage() {
         <MetricCard title="Pending Bills" value={pendingBills} />
       </div>
 
-      <div className="mt-6">
+      <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
         <RevenueChart data={revenueData} />
       </div>
 
-      <div className="mt-4">
-        <h2 className="text-lg font-semibold">Payment Method Stats</h2>
-        <ul className="list-disc list-inside">
+      <div className="mt-4 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <h2 className="text-lg font-semibold text-gray-800 mb-3">
+          Payment Method Stats
+        </h2>
+        <ul className="space-y-2 text-gray-700">
           {Object.entries(paymentMethods).map(([method, count]) => (
-            <li key={method}>
-              {method}: {count}
+            <li key={method} className="flex items-center">
+              <div className="w-2 h-2 rounded-full bg-indigo-500 mr-2"></div>
+              <span>
+                {method}: <span className="font-medium">{count}</span>
+              </span>
             </li>
           ))}
         </ul>

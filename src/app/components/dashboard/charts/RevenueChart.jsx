@@ -29,12 +29,12 @@ export default function RevenueChart() {
           <CartesianGrid strokeDasharray="3 3" stroke="#DDDFDE20" />
           <XAxis 
             dataKey="name" 
-            stroke="#DDDFDE80" 
-            tick={{ fill: '#DDDFDE80' }} 
+            stroke="#000000" 
+            tick={{ fill: '#000000' }} 
           />
           <YAxis 
-            stroke="#DDDFDE80" 
-            tick={{ fill: '#DDDFDE80' }} 
+            stroke="#000000" 
+            tick={{ fill: '#000000' }} 
             tickFormatter={(value) => `$${value}`} 
           />
           <Tooltip 
