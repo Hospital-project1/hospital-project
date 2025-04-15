@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import Appointment from "@/app/models/Appointment";
-import Patient from "@/app/models/Patient";
-import Doctor from "@/app/models/Doctor";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 
